@@ -3,6 +3,7 @@ __author__ = 'mrowe'
 from IO.Input import FileInput
 from Data.Dataset import *
 import numpy as np
+from datetime import timedelta
 
 class InjectionDetector:
 
@@ -62,7 +63,7 @@ class InjectionDetector:
 
     def checkDivergence(self, dataset, globDist, point):
         # Get the 1 week cutoff from the point
-        intervalEnd = point + 7
+        intervalEnd = point + timedelta(7)
 
         # Get the posts that are in this window
         intervalPosts = []
@@ -77,7 +78,7 @@ class InjectionDetector:
 
             # work out the deviation between the vectors
             deviation = self.deviationCalculation(globDist, postVec)
-            print "Deviation = " + deviation
+            print "Deviation = " + str(deviation)
 
 
     def vectoriseMessage(self, post):
@@ -122,4 +123,7 @@ dataset = fileInput.readfromfile(version)
 # get the midpoint
 detector = InjectionDetector(dataset)
 midPoint = detector.detectMidPoint()
-detector.deriveGlobalDistribution(midPoint)
+
+# calculate the divergence from the halfway point dataset - as an initial test
+datNorm = detector.deriveGlobalDistribution(midPoint)
+detector.checkDivergence(dataset, datNorm, midPoint)
