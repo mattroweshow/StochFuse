@@ -29,13 +29,13 @@ if __name__ == "__main__":
             datasetObj = LineParser.parseFacebookLine(line, dataset_name)
             return (dataset_name, datasetObj)
         elif dataset_name is "boards":
-            datasetObj = LineParser.parseFacebookLine(line, dataset_name)
+            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
             return (dataset_name, datasetObj)
         elif dataset_name is "reddit":
-            datasetObj = LineParser.parseFacebookLine(line, dataset_name)
+            datasetObj = LineParser.parseRedditLine(line, dataset_name)
             return (dataset_name, datasetObj)
         elif dataset_name is "twitter":
-            datasetObj = LineParser.parseFacebookLine(line, dataset_name)
+            datasetObj = LineParser.parseTwitterLine(line, dataset_name)
             return (dataset_name, datasetObj)
 
     def reduceDatasets(dataset1, dataset2):
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
-        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
+        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).foldByKey(reduceDatasets)
 
         output = dataset_map.collect()
         print("Filter Accuracy...")
