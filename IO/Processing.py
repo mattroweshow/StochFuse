@@ -102,7 +102,6 @@ def calculateTermDimensionality(dataset):
 # datasetName = "facebook"
 datasetName = "boards"
 
-
 # Get the dataset
 version = ""
 fileInput = FileInput(datasetName)

@@ -24,10 +24,7 @@ class FileInput:
 
     def readFacebookPosts(self, version):
          filepath = "../../data/diffusion/facebook-posts"
-         if version is not "":
-             filepath += "-" + version + ".tsv"
-         else:
-             filepath += ".tsv"
+         filepath += ".tsv"
 
          with open(filepath, 'rb') as tsvin:
              tsvReader = csv.reader(tsvin, delimiter="\t")
@@ -59,11 +56,7 @@ class FileInput:
 
     def readBoardsPosts(self, version):
         filepath = "../../data/diffusion/boards-posts"
-        if version is not "":
-            filepath += "-" + version + ".tsv"
-        else:
-            filepath += ".tsv"
-
+        filepath += ".tsv"
 
         with open(filepath, 'rbU') as tsvin:
              tsvReader = csv.reader(tsvin, delimiter='\t')
@@ -90,8 +83,9 @@ class FileInput:
 
 
 # Test code
-# fileinput = FileInput("facebook")
-# fileinput.readfromfile()
+# dataset_name = "facebook"
+# fileinput = FileInput(dataset_name)
+# fileinput.readfromfile(dataset_name)
 # print fileinput.dataset
 
 
