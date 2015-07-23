@@ -1,9 +1,6 @@
 from __future__ import print_function
 
-import sys
-from random import random
 from pyspark import SparkContext, SparkConf
-import json
 from LineParser import LineParser
 
 if __name__ == "__main__":

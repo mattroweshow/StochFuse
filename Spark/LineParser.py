@@ -1,9 +1,9 @@
 __author__ = 'rowem'
 
-from Data.Dataset import Dataset
-from Data.Post import Post
 from datetime import datetime
 import json
+from Dataset import Dataset
+from Post import Post
 
 class LineParser(object):
 
