@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
-        dataset_map = datasetName.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
+        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
 
         output = dataset_map.collect()
         print("Filter Accuracy...")
