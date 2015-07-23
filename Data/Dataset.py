@@ -14,6 +14,9 @@ class Dataset:
     def __str__(self):
         return str(self.posts.__len__())
 
+    def merge_posts(self, dataset2):
+        self.posts = self.posts + dataset2.posts
+
 
 def getFirstPost(dataset):
     minDate = datetime.now()
