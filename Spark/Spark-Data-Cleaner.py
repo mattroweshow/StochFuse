@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
+from Dataset import Dataset
 
 if __name__ == "__main__":
 
@@ -73,7 +74,8 @@ if __name__ == "__main__":
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
-        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).foldByKey(reduceDatasets)
+        dataset = Dataset("null")
+        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).foldByKey(dataset, reduceDatasets)
 
         output = dataset_map.collect()
         print("Filter Accuracy...")

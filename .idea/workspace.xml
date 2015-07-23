@@ -26,8 +26,8 @@
       <file leaf-file-name="Spark-Data-Cleaner.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Spark/Spark-Data-Cleaner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.72571427" vertical-offset="588" max-vertical-offset="1638">
-              <caret line="75" column="79" selection-start-line="75" selection-start-column="79" selection-end-line="75" selection-end-column="79" />
+            <state vertical-scroll-proportion="0.6571429" vertical-offset="624" max-vertical-offset="1674">
+              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -880,8 +880,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Spark/Spark-Data-Cleaner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.72571427" vertical-offset="588" max-vertical-offset="1638">
-          <caret line="75" column="79" selection-start-line="75" selection-start-column="79" selection-end-line="75" selection-end-column="79" />
+        <state vertical-scroll-proportion="0.6571429" vertical-offset="624" max-vertical-offset="1674">
+          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
