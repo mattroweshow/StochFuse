@@ -24,20 +24,14 @@ if __name__ == "__main__":
         # test that MR is actually working!
 #        vals = line.split("\t")
 #        vals_length = len(vals)
-
-
-
-#        # get the topics from the broadcast
+        # get the topics from the broadcast
         dataset_name = datasetName.value
 
-#
-#        print(dataset_name)
-#
-#        # process each line using the designated line processor for the dataset - given the different
-#        # formats that the data comes in
-#        if dataset_name is "facebook":
-        posts = LineParser.parseFacebookLine(line)
-        return(dataset_name, posts)
+        # process each line using the designated line processor for the dataset - given the different
+        # formats that the data comes in
+        if dataset_name is "facebook":
+            posts = LineParser.parseFacebookLine(line)
+            return(dataset_name, posts)
 #            return (dataset_name, posts)
 #        elif dataset_name is "boards":
 #            datasetObj = LineParser.parseBoardsLine(line, dataset_name)

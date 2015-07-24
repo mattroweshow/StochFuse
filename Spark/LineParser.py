@@ -9,14 +9,7 @@ class LineParser(object):
 
     @staticmethod
     def parseFacebookLine(line):
-        # initialise the dataset
-#        dataset = Dataset(datasetName)
-
-        # Try with post sets for now
         posts = []
-#        post1 = Post(1, 2, 3, "test")
-#        posts.append(post1)
-
         try:
             toks = line.split("\t")
             userid = toks[2]
@@ -40,7 +33,7 @@ class LineParser(object):
     @staticmethod
     def parseBoardsLine(line, datasetName):
         # initialise the dataset
-        dataset = Dataset(datasetName)
+        posts = []
         try:
             toks = line.split("\t")
             userid = toks[2]
@@ -53,15 +46,14 @@ class LineParser(object):
             # build a post
             post = Post(userid, postid, forumid, date)
             post.addContent(content)
-            dataset.addpost(post)
+            posts.append(post)
         except:
              pass
-        return dataset
+        return posts
 
     @staticmethod
     def parseRedditLine(line, datasetName):
-        # initialise the dataset
-        dataset = Dataset(datasetName)
+        posts = []
 
         # load the json object from the line
         j = json.loads(line)
@@ -79,14 +71,13 @@ class LineParser(object):
 
         post = Post(userid, postid, forumid, date)
         post.addContent(content)
-        dataset.addpost(post)
+        posts.append(post)
 
-        return dataset
+        return posts
 
     @staticmethod
     def parseTwitterLine(line, datasetName):
-        # initialise the dataset
-        dataset = Dataset(datasetName)
+        posts = []
 
         # load the json object from the line
         j = json.loads(line)
@@ -105,7 +96,7 @@ class LineParser(object):
 
         post = Post(userid, postid, forumid, date)
         post.addContent(content)
-        dataset.addpost(post)
+        posts.append(post)
 
-        return dataset
+        return posts
 
