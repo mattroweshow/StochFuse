@@ -86,10 +86,14 @@ if __name__ == "__main__":
         dataset_map = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
 
         output = dataset_map.collect()
-        print("Filter Accuracy...")
-        for (dataset_name, posts) in output:
-            size = str(len(posts))
-            print("%s: %s" % (datasetName, size))
+        print("Outputting Results..")
+        for (length, count) in output:
+            length_str = str(length)
+            count_str = str(count)
+            print("%s: %s" % (length_str, count_str))
+#        for (dataset_name, posts) in output:
+#            size = str(len(posts))
+#            print("%s: %s" % (datasetName, size))
         sc.stop()
 
 
