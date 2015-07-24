@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
-        print("Dataset file: " + rawPostsFile)
+        print("Dataset file: " + hdfsUrl)
         dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
 
         output = dataset_map.collect()
