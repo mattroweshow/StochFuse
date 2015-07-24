@@ -37,7 +37,7 @@ if __name__ == "__main__":
 #        # formats that the data comes in
 #        if dataset_name is "facebook":
         posts = LineParser.parseFacebookLine(line)
-        return(dataset_name, len(posts))
+        return(dataset_name, posts)
 #            return (dataset_name, posts)
 #        elif dataset_name is "boards":
 #            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         output = dataset_map.collect()
         print("Outputting Results..")
         for (d_name, posts) in output:
-            count_str = str(posts)
+            count_str = str(len(posts))
             print("%s: %s" % (d_name, count_str))
 #        for (dataset_name, posts) in output:
 #            size = str(len(posts))
