@@ -14,13 +14,14 @@ class LineParser(object):
 
         # Try with post sets for now
         posts = []
-
-        toks = line.split("\t")
-        userid = toks[2]
-        postid = toks[0]
-        forumid = toks[1]
-        content = toks[3]
         try:
+
+            toks = line.split("\t")
+            userid = toks[2]
+            postid = toks[0]
+            forumid = toks[1]
+            content = toks[3]
+
             # Date format: 2012-09-12 22:59:25 = '%Y-%m-%d %H:%M:%S'
             # 'Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p'
             # print row[4]

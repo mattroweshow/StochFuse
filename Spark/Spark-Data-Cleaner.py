@@ -22,22 +22,22 @@ if __name__ == "__main__":
     ###### For processing export file
     def lineMapper(line):
         # test that MR is actually working!
-        vals = line.split("\t")
-        vals_length = len(vals)
+#        vals = line.split("\t")
+#        vals_length = len(vals)
 
 
 
 #        # get the topics from the broadcast
         dataset_name = datasetName.value
 
-        return(dataset_name, 1)
 #
 #        print(dataset_name)
 #
 #        # process each line using the designated line processor for the dataset - given the different
 #        # formats that the data comes in
 #        if dataset_name is "facebook":
-#            posts = LineParser.parseFacebookLine(line)
+        posts = LineParser.parseFacebookLine(line)
+        return(dataset_name, posts)
 #            return (dataset_name, posts)
 #        elif dataset_name is "boards":
 #            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
@@ -49,9 +49,9 @@ if __name__ == "__main__":
 #            datasetObj = LineParser.parseTwitterLine(line, dataset_name)
 #            return (dataset_name, datasetObj)
 
-    def reduceDatasets(count1, count2):
-        count = count1 + count2
-        return count
+    def reduceDatasets(posts1, posts2):
+        posts = posts1 + posts2
+        return posts
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -89,8 +89,8 @@ if __name__ == "__main__":
 
         output = dataset_map.collect()
         print("Outputting Results..")
-        for (d_name, count) in output:
-            count_str = str(count)
+        for (d_name, posts) in output:
+            count_str = str(posts)
             print("%s: %s" % (d_name, count_str))
 #        for (dataset_name, posts) in output:
 #            size = str(len(posts))
