@@ -14,6 +14,9 @@ class LineParser(object):
 
         # Try with post sets for now
         posts = []
+        post1 = Post(1, 2, 3, "test")
+        posts.add(post1)
+
         try:
             toks = line.split("\t")
             userid = toks[2]
