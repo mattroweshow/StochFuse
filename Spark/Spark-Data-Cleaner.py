@@ -21,29 +21,35 @@ if __name__ == "__main__":
     ##### Map-Reduce Functions
     ###### For processing export file
     def lineMapper(line):
-        # get the topics from the broadcast
-        dataset_name = datasetName.value
+        # test that MR is actually working!
+        vals = line.split("\t")
+        vals_length = len(vals)
 
-        print(dataset_name)
+        return(vals_length, 1)
 
-        # process each line using the designated line processor for the dataset - given the different
-        # formats that the data comes in
-        if dataset_name is "facebook":
-            posts = LineParser.parseFacebookLine(line)
-            return (dataset_name, posts)
-        elif dataset_name is "boards":
-            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
-            return (dataset_name, datasetObj)
-        elif dataset_name is "reddit":
-            datasetObj = LineParser.parseRedditLine(line, dataset_name)
-            return (dataset_name, datasetObj)
-        elif dataset_name is "twitter":
-            datasetObj = LineParser.parseTwitterLine(line, dataset_name)
-            return (dataset_name, datasetObj)
+#        # get the topics from the broadcast
+#        dataset_name = datasetName.value
+#
+#        print(dataset_name)
+#
+#        # process each line using the designated line processor for the dataset - given the different
+#        # formats that the data comes in
+#        if dataset_name is "facebook":
+#            posts = LineParser.parseFacebookLine(line)
+#            return (dataset_name, posts)
+#        elif dataset_name is "boards":
+#            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
+#            return (dataset_name, datasetObj)
+#        elif dataset_name is "reddit":
+#            datasetObj = LineParser.parseRedditLine(line, dataset_name)
+#            return (dataset_name, datasetObj)
+#        elif dataset_name is "twitter":
+#            datasetObj = LineParser.parseTwitterLine(line, dataset_name)
+#            return (dataset_name, datasetObj)
 
-    def reduceDatasets(posts1, posts2):
-        posts = posts1 + posts2
-        return posts
+    def reduceDatasets(count1, count2):
+        count = count1 + count2
+        return count
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -77,7 +83,7 @@ if __name__ == "__main__":
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
         print("Dataset file: " + hdfsUrl)
-        dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
+        dataset_map = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
 
         output = dataset_map.collect()
         print("Filter Accuracy...")
