@@ -25,10 +25,12 @@ if __name__ == "__main__":
         vals = line.split("\t")
         vals_length = len(vals)
 
-        return(vals_length, 1)
+
 
 #        # get the topics from the broadcast
-#        dataset_name = datasetName.value
+        dataset_name = datasetName.value
+
+        return(dataset_name, 1)
 #
 #        print(dataset_name)
 #
@@ -87,10 +89,9 @@ if __name__ == "__main__":
 
         output = dataset_map.collect()
         print("Outputting Results..")
-        for (length, count) in output:
-            length_str = str(length)
+        for (d_name, count) in output:
             count_str = str(count)
-            print("%s: %s" % (length_str, count_str))
+            print("%s: %s" % (d_name, count_str))
 #        for (dataset_name, posts) in output:
 #            size = str(len(posts))
 #            print("%s: %s" % (datasetName, size))
