@@ -27,8 +27,8 @@ if __name__ == "__main__":
         # process each line using the designated line processor for the dataset - given the different
         # formats that the data comes in
         if dataset_name is "facebook":
-            datasetObj = LineParser.parseFacebookLine(line, dataset_name)
-            return (dataset_name, datasetObj)
+            posts = LineParser.parseFacebookLine(line)
+            return (dataset_name, posts)
         elif dataset_name is "boards":
             datasetObj = LineParser.parseBoardsLine(line, dataset_name)
             return (dataset_name, datasetObj)
@@ -39,9 +39,9 @@ if __name__ == "__main__":
             datasetObj = LineParser.parseTwitterLine(line, dataset_name)
             return (dataset_name, datasetObj)
 
-    def reduceDatasets(dataset1, dataset2):
-        dataset1.merge_posts(dataset2)
-        return dataset1
+    def reduceDatasets(posts1, posts2):
+        posts = posts1 + posts2
+        return posts
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -79,8 +79,8 @@ if __name__ == "__main__":
 
         output = dataset_map.collect()
         print("Filter Accuracy...")
-        for (dataset_name, datasetObj) in output:
-            size = str(len(datasetObj.posts))
+        for (dataset_name, posts) in output:
+            size = str(len(posts))
             print("%s: %s" % (datasetName, size))
         sc.stop()
 

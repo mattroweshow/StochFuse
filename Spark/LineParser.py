@@ -8,9 +8,12 @@ from Post import Post
 class LineParser(object):
 
     @staticmethod
-    def parseFacebookLine(line, datasetName):
+    def parseFacebookLine(line):
         # initialise the dataset
-        dataset = Dataset(datasetName)
+#        dataset = Dataset(datasetName)
+
+        # Try with post sets for now
+        posts = []
 
         toks = line.split("\t")
         userid = toks[2]
@@ -25,10 +28,11 @@ class LineParser(object):
             # build a post
             post = Post(userid, postid, forumid, date)
             post.addContent(content)
-            dataset.addpost(post)
+            posts.add(post)
+#            dataset.addpost(post)
         except:
             pass
-        return dataset
+        return posts
 
     @staticmethod
     def parseBoardsLine(line, datasetName):
