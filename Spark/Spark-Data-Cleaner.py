@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
         # process each line using the designated line processor for the dataset - given the different
         # formats that the data comes in
-#        if dataset_name is "facebook":
-        posts = LineParser.parseFacebookLine(line)
-        return(dataset_name, posts)
+        if "facebook" in dataset_name:
+            posts = LineParser.parseFacebookLine(line)
+            return(dataset_name, posts)
 #            return (dataset_name, posts)
 #        elif dataset_name is "boards":
 #            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
