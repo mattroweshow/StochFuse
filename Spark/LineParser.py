@@ -14,8 +14,8 @@ class LineParser(object):
 
         # Try with post sets for now
         posts = []
-        post1 = Post(1, 2, 3, "test")
-        posts.add(post1)
+#        post1 = Post(1, 2, 3, "test")
+#        posts.append(post1)
 
         try:
             toks = line.split("\t")
@@ -31,7 +31,7 @@ class LineParser(object):
             # build a post
             post = Post(userid, postid, forumid, date)
             post.addContent(content)
-            posts.add(post)
+            posts.append(post)
 #            dataset.addpost(post)
         except:
             pass
