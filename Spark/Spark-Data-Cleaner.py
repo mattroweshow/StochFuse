@@ -24,6 +24,8 @@ if __name__ == "__main__":
         # get the topics from the broadcast
         dataset_name = datasetName.value
 
+        print(dataset_name)
+
         # process each line using the designated line processor for the dataset - given the different
         # formats that the data comes in
         if dataset_name is "facebook":
@@ -74,6 +76,7 @@ if __name__ == "__main__":
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
+        print("Dataset file: " + rawPostsFile)
         dataset_map = rawPostsFile.map(lambda line: lineMapper(line)).reduceByKey(reduceDatasets)
 
         output = dataset_map.collect()
