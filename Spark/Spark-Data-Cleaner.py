@@ -90,7 +90,7 @@ if __name__ == "__main__":
         output = dataset_map.collect()
         print("Outputting Results..")
         for (d_name, posts) in output:
-            count_str = str(posts)
+            count_str = str(len(posts))
             print("%s: %s" % (d_name, count_str))
 #        for (dataset_name, posts) in output:
 #            size = str(len(posts))
