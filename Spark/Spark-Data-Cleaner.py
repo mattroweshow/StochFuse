@@ -65,7 +65,7 @@ if __name__ == "__main__":
     sc.setCheckpointDir("hdfs://scc-culture-mind.lancs.ac.uk/data/checkpointing")
 
     # set the datasets to be processed
-    datasets = ["facebook", "boards"]
+    datasets = ["boards"]
 
     # clean each dataset
     for dataset in datasets:
