@@ -32,17 +32,17 @@ if __name__ == "__main__":
         if "facebook" in dataset_name:
             posts = LineParser.parseFacebookLine(line)
             return(dataset_name, posts)
-#            return (dataset_name, posts)
-#        elif dataset_name is "boards":
-#            datasetObj = LineParser.parseBoardsLine(line, dataset_name)
-#            return (dataset_name, datasetObj)
-#        elif dataset_name is "reddit":
-#            datasetObj = LineParser.parseRedditLine(line, dataset_name)
-#            return (dataset_name, datasetObj)
-#        elif dataset_name is "twitter":
-#            datasetObj = LineParser.parseTwitterLine(line, dataset_name)
-#            return (dataset_name, datasetObj)
+        elif "boards" in dataset_name:
+            posts = LineParser.parseBoardsLine(line, dataset_name)
+            return (dataset_name, posts)
+        elif "reddit" in dataset_name:
+            posts = LineParser.parseRedditLine(line, dataset_name)
+            return (dataset_name, posts)
+        elif "twitter" in dataset_name:
+            posts = LineParser.parseTwitterLine(line, dataset_name)
+            return (dataset_name, posts)
 
+    #### Combines the posts together
     def reduceDatasets(posts1, posts2):
         posts = posts1 + posts2
         return posts
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     sc.setCheckpointDir("hdfs://scc-culture-mind.lancs.ac.uk/data/checkpointing")
 
     # set the datasets to be processed
-    datasets = ["facebook"]
+    datasets = ["facebook", "boards"]
 
     # clean each dataset
     for dataset in datasets:
