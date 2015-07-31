@@ -31,7 +31,7 @@ class LineParser(object):
         return posts
 
     @staticmethod
-    def parseBoardsLine(line, datasetName):
+    def parseBoardsLine(line):
         # initialise the dataset
         posts = []
         try:

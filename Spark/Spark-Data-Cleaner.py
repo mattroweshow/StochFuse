@@ -33,7 +33,7 @@ if __name__ == "__main__":
             posts = LineParser.parseFacebookLine(line)
             return(dataset_name, posts)
         elif "boards" in dataset_name:
-            posts = LineParser.parseBoardsLine(line, dataset_name)
+            posts = LineParser.parseBoardsLine(line)
             return (dataset_name, posts)
         elif "reddit" in dataset_name:
             posts = LineParser.parseRedditLine(line, dataset_name)
@@ -57,7 +57,8 @@ if __name__ == "__main__":
     conf.set("spark.driver.maxResultSize", "10g")
     # Added the core limit to avoid resource allocation overruns
     conf.set("spark.cores.max", "20")
-    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
+#    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
+    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:7070/mesos")
     conf.set("spark.executor.uri", "hdfs://scc-culture-mind.lancs.ac.uk/lib/spark-1.3.0-bin-hadoop2.4.tgz")
     conf.set("spark.broadcast.factory", "org.apache.spark.broadcast.TorrentBroadcastFactory")
 
