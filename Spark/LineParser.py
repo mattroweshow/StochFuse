@@ -42,7 +42,7 @@ class LineParser(object):
             content = toks[5]
             # Date format: 2001-04-24 16:49:00 = '%Y-%m-%d %H:%M:%S'
             # 'Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p'
-            date = datetime.strptime(toks[4], '%Y-%m-%d %H:%M:%S')
+            date = datetime.strptime(toks[4], '\"%Y-%m-%d %H:%M:%S\"')
             # build a post
             post = Post(userid, postid, forumid, date)
             post.addContent(content)
