@@ -102,7 +102,7 @@ if __name__ == "__main__":
             print("----Collecting parition result")
             data_from_part_rdd = part_rdd.collect()
 
-            print("%s elements: %s" % (part_id, str(data_from_part_rdd)))
+            print("%s elements: %s" % (part_id, str(len(data_from_part_rdd))))
 
             # count the size of the posts set in the partition
             # for (d_name, posts) in data_from_part_rdd:
