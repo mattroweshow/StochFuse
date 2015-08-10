@@ -83,35 +83,43 @@ if __name__ == "__main__":
         rawPostsFile = sc.textFile(hdfsUrl, minPartitions=12)
 
         # Go through each partition and then count how many posts are stored within each
-        print("-----Outputting Results..")
+        print("-----Computing partition-level MR job..")
 
-        # define the partition filter function
-        def make_part_filter(index):
-            def part_filter(split_index, iterator):
-                if split_index == index:
-                    for el in iterator:
-                        yield el
-            return part_filter
+        # Effort 2: running mapPartitions
+        y = rawPostsFile.mapPartitions(lambda lines: len((lines.map(lineMapper).reduceByKey(reduceDatasets))[0][1]) for line in lines)
+        output = sum(y)
+        print("-----Result Array: %s" % y)
+        print("-----Result: %s" % str(output))
+        
+        
 
-        # iterate through each partition of the file
-        posts_count = 0
-
-        for part_id in range(rawPostsFile.getNumPartitions()):
-            print("----Patition id: " + str(part_id))
-            part_rdd = rawPostsFile.mapPartitionsWithIndex(make_part_filter(part_id), True)\
-                .map(lineMapper)\
-                .reduceByKey(reduceDatasets)
-            print("----Collecting parition result")
-            data_from_part_rdd = part_rdd.collect()
-
-            # data_str = str(data_from_part_rdd)
-            # print("%s elements: %s" % (part_id, data_str[0:50]))
-            # ('facebook', [<Post.Post instance at 0x7f4adf28305
-            # data_str = str(data_from_part_rdd[0])
-            posts_count += len(data_from_part_rdd[0][1])
-            print("%s" % str(len(data_from_part_rdd[0][1])))
-
-        print("Total posts count: %s" % str(posts_count))
+#        #### Effort 1:  define the partition filter function
+#        def make_part_filter(index):
+#            def part_filter(split_index, iterator):
+#                if split_index == index:
+#                    for el in iterator:
+#                        yield el
+#            return part_filter
+#
+#        # iterate through each partition of the file
+#        posts_count = 0
+#
+#        for part_id in range(rawPostsFile.getNumPartitions()):
+#            print("----Patition id: " + str(part_id))
+#            part_rdd = rawPostsFile.mapPartitionsWithIndex(make_part_filter(part_id), True)\
+#                .map(lineMapper)\
+#                .reduceByKey(reduceDatasets)
+#            print("----Collecting parition result")
+#            data_from_part_rdd = part_rdd.collect()
+#
+#            # data_str = str(data_from_part_rdd)
+#            # print("%s elements: %s" % (part_id, data_str[0:50]))
+#            # ('facebook', [<Post.Post instance at 0x7f4adf28305
+#            # data_str = str(data_from_part_rdd[0])
+#            posts_count += len(data_from_part_rdd[0][1])
+#            print("%s" % str(len(data_from_part_rdd[0][1])))
+#
+#        print("Total posts count: %s" % str(posts_count))
         sc.stop()
 
 
