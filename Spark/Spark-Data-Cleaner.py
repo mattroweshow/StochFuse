@@ -49,12 +49,12 @@ if __name__ == "__main__":
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
-    conf.set("spark.python.worker.memory","10g")
-    conf.set("spark.driver.memory","15g")
-    conf.set("spark.executor.memory","10g")
+    conf.set("spark.python.worker.memory","8g")
+    conf.set("spark.driver.memory","8g")
+    conf.set("spark.executor.memory","8g")
     conf.set("spark.default.parallelism", "12")
     conf.set("spark.mesos.coarse", "true")
-    conf.set("spark.driver.maxResultSize", "10g")
+    conf.set("spark.driver.maxResultSize", "8g")
     # Added the core limit to avoid resource allocation overruns
     conf.set("spark.cores.max", "15")
 #    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
