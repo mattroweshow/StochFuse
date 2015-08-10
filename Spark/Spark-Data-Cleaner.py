@@ -102,7 +102,7 @@ if __name__ == "__main__":
             part_rdd = data_rdd.mapPartitionsWithIndex(make_part_filter(part_id), True)
             print("----Collecting parition result")
             data_from_part_rdd = part_rdd.collect()
-            print("partition id: %s elements: %s" % (part_id, data_from_part_rdd))
+            print("partition id: %s elements: %s" % (part_id, str(len(data_from_part_rdd))))
 
             # count the size of the posts set in the partition
             # for (d_name, posts) in data_from_part_rdd:
