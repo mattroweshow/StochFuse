@@ -66,8 +66,8 @@ if __name__ == "__main__":
     sc.setCheckpointDir("hdfs://scc-culture-mind.lancs.ac.uk/data/checkpointing")
 
     # set the datasets to be processed
-    datasets = ["facebook"]
-    # datasets = ["boards"]
+    # datasets = ["facebook"]
+    datasets = ["boards"]
 
     # clean each dataset
     for dataset in datasets:
@@ -110,16 +110,6 @@ if __name__ == "__main__":
             # data_str = str(data_from_part_rdd[0])
             posts_count += len(data_from_part_rdd[0][1])
             print("%s" % str(len(data_from_part_rdd[0][1])))
-
-            # data_from_part_rdd[0]
-            # for (d_name, posts) in data_from_part_rdd[0].iteritems():
-            #     count_str = str(len(posts))
-            #     print("%s: %s" % (d_name, count_str))
-
-            # count the size of the posts set in the partition
-            # for (d_name, posts) in data_from_part_rdd:
-            #     count_str = str(len(posts))
-            #     print("partition id: %s elements: %s" % (part_id, count_str))
 
         print("Total posts count: %s" % str(posts_count))
         sc.stop()
