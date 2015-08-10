@@ -49,12 +49,12 @@ if __name__ == "__main__":
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
-    conf.set("spark.python.worker.memory","8g")
-    conf.set("spark.driver.memory","8g")
-    conf.set("spark.executor.memory","8g")
+    conf.set("spark.python.worker.memory","10g")
+    conf.set("spark.driver.memory","15g")
+    conf.set("spark.executor.memory","10g")
     conf.set("spark.default.parallelism", "12")
     conf.set("spark.mesos.coarse", "true")
-    conf.set("spark.driver.maxResultSize", "8g")
+    conf.set("spark.driver.maxResultSize", "10g")
     # Added the core limit to avoid resource allocation overruns
     conf.set("spark.cores.max", "15")
 #    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
@@ -80,13 +80,37 @@ if __name__ == "__main__":
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
         print("Dataset file: " + hdfsUrl)
-        dataset_map = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
 
-        output = dataset_map.collect()
+        # derive the rdd containing all of the posts - this will be partitioned across the cluster
+        data_rdd = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
+
+        # Go through each partition and then count how many posts are stored within each
         print("Outputting Results..")
-        for (d_name, posts) in output:
-            count_str = str(len(posts))
-            print("%s: %s" % (d_name, count_str))
+
+        # define the partition filter function
+        def make_part_filter(index):
+            def part_filter(split_index, iterator):
+                if split_index == index:
+                    for el in iterator:
+                        yield el
+            return part_filter
+
+        # iterate through each parition
+        for part_id in range(data_rdd.getNumPartitions()):
+            part_rdd = data_rdd.mapPartitionsWithIndex(make_part_filter(part_id), True)
+            data_from_part_rdd = part_rdd.collect()
+
+            # count the size of the posts set in the partition
+            for (d_name, posts) in data_from_part_rdd:
+                count_str = str(len(posts))
+                print("partition id: %s elements: %s" % (part_id, count_str))
+
+        # Use toLocalIterator
+        # output = dataset_map.collect()
+        # print("Outputting Results..")
+        # for (d_name, posts) in data_rdd.toLocalIterator():
+        #     count_str = str(len(posts))
+        #     print("%s: %s" % (d_name, count_str))
 #        for (dataset_name, posts) in output:
 #            size = str(len(posts))
 #            print("%s: %s" % (datasetName, size))
