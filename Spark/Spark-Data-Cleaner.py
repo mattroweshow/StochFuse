@@ -101,8 +101,9 @@ if __name__ == "__main__":
                 .reduceByKey(reduceDatasets)
             print("----Collecting parition result")
             data_from_part_rdd = part_rdd.collect()
+            data_str = str(data_from_part_rdd)
 
-            print("%s elements: %s" % (part_id, str(data_from_part_rdd)[50:]))
+            print("%s elements: %s" % (part_id, data_str[0:10]))
 
             # count the size of the posts set in the partition
             # for (d_name, posts) in data_from_part_rdd:
