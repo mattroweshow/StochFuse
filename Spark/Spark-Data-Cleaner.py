@@ -75,18 +75,18 @@ if __name__ == "__main__":
         hdfsUrl = getHDFSFileLocation(dataset)
 
         # broadcast the name of the dataset to the cluster
-        print("Broadcasting the name of the dataset being processed")
+        print("----Broadcasting the name of the dataset being processed")
         datasetName = sc.broadcast(dataset)
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         rawPostsFile = sc.textFile(hdfsUrl)
-        print("Dataset file: " + hdfsUrl)
+        print("-----Dataset file: " + hdfsUrl)
 
         # derive the rdd containing all of the posts - this will be partitioned across the cluster
         data_rdd = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
 
         # Go through each partition and then count how many posts are stored within each
-        print("Outputting Results..")
+        print("-----Outputting Results..")
 
         # define the partition filter function
         def make_part_filter(index):
