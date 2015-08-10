@@ -105,7 +105,7 @@ if __name__ == "__main__":
             # data_str = str(data_from_part_rdd)
             # print("%s elements: %s" % (part_id, data_str[0:50]))
             # data_from_part_rdd[0]
-            for (d_name, posts) in data_from_part_rdd[0]:
+            for (d_name, posts) in data_from_part_rdd[0].iteritems():
                 count_str = str(len(posts))
                 print("%s: %s" % (d_name, count_str))
 
