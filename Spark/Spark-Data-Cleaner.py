@@ -94,6 +94,8 @@ if __name__ == "__main__":
             return part_filter
 
         # iterate through each partition of the file
+        posts_count = 0
+
         for part_id in range(rawPostsFile.getNumPartitions()):
             print("----Patition id: " + str(part_id))
             part_rdd = rawPostsFile.mapPartitionsWithIndex(make_part_filter(part_id), True)\
@@ -106,7 +108,7 @@ if __name__ == "__main__":
             # print("%s elements: %s" % (part_id, data_str[0:50]))
             # ('facebook', [<Post.Post instance at 0x7f4adf28305
             # data_str = str(data_from_part_rdd[0])
-
+            posts_count += len(data_from_part_rdd[0][1])
             print("%s" % str(len(data_from_part_rdd[0][1])))
 
             # data_from_part_rdd[0]
@@ -119,15 +121,7 @@ if __name__ == "__main__":
             #     count_str = str(len(posts))
             #     print("partition id: %s elements: %s" % (part_id, count_str))
 
-        # Use toLocalIterator
-        # output = dataset_map.collect()
-        # print("Outputting Results..")
-        # for (d_name, posts) in data_rdd.toLocalIterator():
-        #     count_str = str(len(posts))
-        #     print("%s: %s" % (d_name, count_str))
-#        for (dataset_name, posts) in output:
-#            size = str(len(posts))
-#            print("%s: %s" % (datasetName, size))
+        print("Total posts count: %s" % str(posts_count))
         sc.stop()
 
 
