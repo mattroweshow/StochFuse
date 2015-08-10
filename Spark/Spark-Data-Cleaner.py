@@ -79,11 +79,8 @@ if __name__ == "__main__":
         datasetName = sc.broadcast(dataset)
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
-        rawPostsFile = sc.textFile(hdfsUrl)
         print("-----Dataset file: " + hdfsUrl)
-
-        # derive the rdd containing all of the posts - this will be partitioned across the cluster
-        data_rdd = rawPostsFile.map(lineMapper).reduceByKey(reduceDatasets)
+        rawPostsFile = sc.textFile(hdfsUrl, minPartitions=12)
 
         # Go through each partition and then count how many posts are stored within each
         print("-----Outputting Results..")
@@ -96,16 +93,16 @@ if __name__ == "__main__":
                         yield el
             return part_filter
 
-        # iterate through each parition
-        for part_id in range(data_rdd.getNumPartitions()):
+        # iterate through each partition of the file
+        for part_id in range(rawPostsFile.getNumPartitions()):
             print("----Patition id: " + str(part_id))
-            part_rdd = data_rdd.mapPartitionsWithIndex(make_part_filter(part_id), True)
+            part_rdd = rawPostsFile.mapPartitionsWithIndex(make_part_filter(part_id), True)\
+                .map(lineMapper)\
+                .reduceByKey(reduceDatasets)
             print("----Collecting parition result")
             data_from_part_rdd = part_rdd.collect()
-            for (d_name, posts) in data_from_part_rdd:
-                count_str = str(len(posts))
-                print("%s: %s" % (d_name, count_str))
-            # print("partition id: %s elements: %s" % (part_id, str(len(data_from_part_rdd))))
+
+            print("%s elements: %s" % (part_id, str(data_from_part_rdd.first())))
 
             # count the size of the posts set in the partition
             # for (d_name, posts) in data_from_part_rdd:
