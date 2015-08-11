@@ -19,12 +19,27 @@ if __name__ == "__main__":
 
 
     def lineMapperLists(lines):
-        print(str(lines))
-        posts_rdd = lines.map(lineMapper).reduceByKey(reduceDatasets)
-        return posts_rdd
+        posts_global = []
+        dataset_name = datasetName.value
+        for line in lines:
+            if "facebook" in dataset_name:
+                posts = LineParser.parseFacebookLine(line)
+                posts_global += posts
+            elif "boards" in dataset_name:
+                posts = LineParser.parseBoardsLine(line)
+                posts_global += posts
+            elif "reddit" in dataset_name:
+                posts = LineParser.parseRedditLine(line, dataset_name)
+                posts_global += posts
+            elif "twitter" in dataset_name:
+                posts = LineParser.parseTwitterLine(line, dataset_name)
+                posts_global += posts
+        return posts_global
 
-    ##### Map-Reduce Functions
-    ###### For processing export file
+    def combineListsLengths(posts1, posts2):
+        postsLength = len(posts1) + len(posts2)
+        return postsLength
+
     def lineMapper(line):
         # test that MR is actually working!
 #        vals = line.split("\t")
@@ -53,6 +68,9 @@ if __name__ == "__main__":
         return posts
 
 
+
+
+
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
     conf.set("spark.python.worker.memory","10g")
@@ -75,6 +93,7 @@ if __name__ == "__main__":
     # datasets = ["facebook"]
     datasets = ["boards"]
 
+
     # clean each dataset
     for dataset in datasets:
         # get the HDFS url of the dataset
@@ -94,7 +113,7 @@ if __name__ == "__main__":
         # Effort 2: running mapPartitions
         # y = rawPostsFile.mapPartitions(lineMapperLists).collect()
 
-        y = rawPostsFile.mapPartitions(lambda x: [len(x)]).collect()
+        y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
 
         # output = sum(y)
         print("-----Result Array: %s" % str(y))
