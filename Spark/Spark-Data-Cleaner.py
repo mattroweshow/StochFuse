@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
 
     def lineMapperLists(lines):
+        print(str(lines))
         posts_rdd = lines.map(lineMapper).reduceByKey(reduceDatasets)
         return posts_rdd
 
