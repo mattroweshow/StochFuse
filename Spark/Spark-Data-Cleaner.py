@@ -119,13 +119,13 @@ if __name__ == "__main__":
         # y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
         # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
 
-        y = rawPostsFile\
+        tokens_dict = rawPostsFile\
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
             .collect()
 
-        print("Tokens dictionary : %s" % str(len(y)))
+        print("Tokens dictionary : %s" % str(tokens_dict))
 
         # # 0. Calculate the number of posts within the dataset
         # print "Original Dataset Number of Posts = " + str(len(dataset.posts))
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         # fileWriter.writeDatasetToFile(newDataset3, newVersion)
 
         # output = sum(y)
-        print("-----Result Array: %s" % str())
+        # print("-----Result Array: %s" % str())
         # print("-----Result: %s" % str(output))
         
         
