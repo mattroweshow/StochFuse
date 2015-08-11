@@ -2,7 +2,6 @@ from __future__ import print_function
 
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
-from nltk.tokenize import RegexpTokenizer
 from Dataset import Dataset
 
 if __name__ == "__main__":
@@ -61,8 +60,8 @@ if __name__ == "__main__":
 
         terms = []
         if len(posts) == 1:
-            tokenizer = RegexpTokenizer(r'\w+')
-            terms = tokenizer.tokenize(posts[0].content.lower())
+            # tokenizer = RegexpTokenizer(r'\w+')
+            terms = posts[0].content.lower().split("\w+")
         return terms
 
     # Compiles a dictionary of terms using a basic term count distribution and MR design pattern
