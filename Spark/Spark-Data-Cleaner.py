@@ -37,6 +37,7 @@ if __name__ == "__main__":
         return posts_global
 
     def combineListsLengths(posts1, posts2):
+        print(str(posts1))
         postsLength = len(posts1) + len(posts2)
         return postsLength
 
