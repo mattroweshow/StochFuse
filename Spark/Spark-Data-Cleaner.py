@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
+from nltk.tokenize import RegexpTokenizer
 from Dataset import Dataset
 
 if __name__ == "__main__":
@@ -16,7 +17,6 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-all.json"
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets2.json"
-
 
     def cleanLines(lines):
         posts_global = []
@@ -42,6 +42,36 @@ if __name__ == "__main__":
 
     def combineListsLengths(count1, count2):
         return count1 + count2
+
+
+    ##### Data Cleaning Spark Functions
+
+    def lineTokenizer(line):
+        dataset_name = datasetName.value
+        posts = []
+
+        if "facebook" in dataset_name:
+            posts = LineParser.parseFacebookLine(line)
+        elif "boards" in dataset_name:
+            posts = LineParser.parseBoardsLine(line)
+        elif "reddit" in dataset_name:
+            posts = LineParser.parseRedditLine(line, dataset_name)
+        elif "twitter" in dataset_name:
+            posts = LineParser.parseTwitterLine(line, dataset_name)
+
+        terms = []
+        if len(posts) == 1:
+            tokenizer = RegexpTokenizer(r'\w+')
+            terms = tokenizer.tokenize(posts[0].content.lower())
+        return terms
+
+    # Compiles a dictionary of terms using a basic term count distribution and MR design pattern
+    def tokenFrequencyMapper(token):
+        return (token, 1)
+
+    def tokenFrequencyReducer(count1, count2):
+        count = count1 + count2
+        return count
 
 
     ##### Main Execution Code
@@ -86,8 +116,42 @@ if __name__ == "__main__":
         # Effort 2: running mapPartitions
         # y = rawPostsFile.mapPartitions(lineMapperLists).collect()
 
+        # Working examples:
         # y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
-        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
+        # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
+
+        y = rawPostsFile\
+            .flatMap(lineTokenizer)\
+            .map(tokenFrequencyMapper)\
+            .reduceByKey(tokenFrequencyReducer)
+
+        print("Tokens dictionary : %s" % str(y))
+
+        # # 0. Calculate the number of posts within the dataset
+        # print "Original Dataset Number of Posts = " + str(len(dataset.posts))
+        # print "# terms = " + str(calculateTermDimensionality(dataset))
+        #
+        # # Apply the pre-processing
+        # # 1. Remove Sparse Terms
+        # minFreq = 5
+        # newDataset = removeSparseTerms(dataset, minFreq)
+        # print "# Posts after removing sparse terms = " + str(len(newDataset.posts))
+        # print "# terms = " + str(calculateTermDimensionality(newDataset))
+        #
+        # # 2. Remove Stopwords
+        # newDataset2 = removeStopWords(newDataset)
+        # print "# Posts after removing stop words = " + str(len(newDataset2.posts))
+        # print "# terms = " + str(calculateTermDimensionality(newDataset2))
+        #
+        # # 3. Perform stemming
+        # newDataset3 = stemWords(newDataset2)
+        # print "# Posts after stemming = " + str(len(newDataset3.posts))
+        # print "# terms = " + str(calculateTermDimensionality(newDataset3))
+        #
+        # # Write to the file
+        # newVersion = "cleaned"
+        # fileWriter = FileWriter(datasetName)
+        # fileWriter.writeDatasetToFile(newDataset3, newVersion)
 
         # output = sum(y)
         print("-----Result Array: %s" % str())
