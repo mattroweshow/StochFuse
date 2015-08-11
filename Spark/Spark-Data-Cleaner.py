@@ -25,18 +25,19 @@ if __name__ == "__main__":
         for line in lines:
             if "facebook" in dataset_name:
                 posts = LineParser.parseFacebookLine(line)
-                # posts_global += posts
+                posts_global += posts
             elif "boards" in dataset_name:
                 posts = LineParser.parseBoardsLine(line)
-                # posts_global += posts
-                count += len(posts)
+                posts_global += posts
+                # count += len(posts)
             elif "reddit" in dataset_name:
                 posts = LineParser.parseRedditLine(line, dataset_name)
                 posts_global += posts
             elif "twitter" in dataset_name:
                 posts = LineParser.parseTwitterLine(line, dataset_name)
                 posts_global += posts
-        return [count]
+        return [len(posts_global)]
+        # return [count]
 
     def combineListsLengths(count1, count2):
         return count1 + count2
