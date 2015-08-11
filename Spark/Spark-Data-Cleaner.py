@@ -20,26 +20,26 @@ if __name__ == "__main__":
 
     def lineMapperLists(lines):
         posts_global = []
+        count = 0
         dataset_name = datasetName.value
         for line in lines:
             if "facebook" in dataset_name:
                 posts = LineParser.parseFacebookLine(line)
-                posts_global += posts
+                # posts_global += posts
             elif "boards" in dataset_name:
                 posts = LineParser.parseBoardsLine(line)
-                posts_global += posts
+                # posts_global += posts
+                count += len(posts)
             elif "reddit" in dataset_name:
                 posts = LineParser.parseRedditLine(line, dataset_name)
                 posts_global += posts
             elif "twitter" in dataset_name:
                 posts = LineParser.parseTwitterLine(line, dataset_name)
                 posts_global += posts
-        return posts_global
+        return [count]
 
-    def combineListsLengths(posts1, posts2):
-        print("Output is %s" % str(posts1))
-        postsLength = len(posts1) + len(posts2)
-        return postsLength
+    def combineListsLengths(count1, count2):
+        return count1 + count2
 
     def lineMapper(line):
         # test that MR is actually working!
