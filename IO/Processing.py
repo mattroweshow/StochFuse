@@ -43,7 +43,7 @@ def removeSparseTerms(dataset, minFreq):
             if term in termCount :
                 tally = termCount[term]
                 termCount[term] = tally + 1
-            else :
+            else:
                 termCount[term] = 1
 
     # Add to the new dataset the messages for which we have more that the minFreq of terms

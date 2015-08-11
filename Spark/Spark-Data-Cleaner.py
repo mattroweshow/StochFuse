@@ -2,7 +2,8 @@ from __future__ import print_function
 
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
-from Dataset import Dataset
+from Post import Post
+from nltk.corpus import stopwords
 
 if __name__ == "__main__":
 
@@ -22,10 +23,7 @@ if __name__ == "__main__":
 
         # receive the broadcast variables
         dataset_name = datasetName.value
-        tokens_dict_broadcast = tokens_dict_broadcast.value
-
-        #
-
+        tokensDictBroadcastV = tokensDictBroadcast.value
 
         for line in lines:
             if "facebook" in dataset_name:
@@ -43,14 +41,30 @@ if __name__ == "__main__":
                 posts_global += posts
 
         # Clean each line that has been loaded
+        minFreq = 5
+        cachedStopWords = stopwords.words("english")
+        newPosts = []
+        for post in posts_global:
+            newMessage = ""
+            terms = post.content.lower().split()
+            for term in terms:
+                if tokensDictBroadcastV[term] >= minFreq and term not in cachedStopWords:
+                    # Create the new post
+                    newMessage += term + " "
+                    
+            # Check that the new message is not just blank
+            if len(newMessage) > 0:
+                newPost = Post(post.author, post.postid, post.forumid, post.date)
+                newPost.addContent(newMessage)
+                newPosts.append(newPost)
 
+        # Write the new posts to HDFS
 
-        return [len(posts_global)]
+        return [len(newPosts)]
         # return [count]
 
     def combineListsLengths(count1, count2):
         return count1 + count2
-
 
     ##### Data Cleaning Spark Functions
     def lineTokenizer(line):
@@ -137,9 +151,10 @@ if __name__ == "__main__":
         print("Tokens dictionary size: %s" % str(tokensDict))
 
         # broadcast the token dictionary to the cluster
-        # tokensDictBroadcast = sc.broadcast(tokensDict)
+        tokensDictBroadcast = sc.broadcast(tokensDict)
 
         # clean the posts and write them into HDFS from their respective paritions
+
 
 
         # # 0. Calculate the number of posts within the dataset
