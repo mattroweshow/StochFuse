@@ -122,7 +122,8 @@ if __name__ == "__main__":
         y = rawPostsFile\
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
-            .reduceByKey(tokenFrequencyReducer)
+            .reduceByKey(tokenFrequencyReducer)\
+            .collect()
 
         print("Tokens dictionary : %s" % str(len(y)))
 
