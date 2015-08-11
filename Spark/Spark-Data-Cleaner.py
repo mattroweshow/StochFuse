@@ -19,7 +19,14 @@ if __name__ == "__main__":
 
     def cleanLines(lines):
         posts_global = []
+
+        # receive the broadcast variables
         dataset_name = datasetName.value
+        tokens_dict_broadcast = tokens_dict_broadcast.value
+
+        #
+
+
         for line in lines:
             if "facebook" in dataset_name:
                 posts = LineParser.parseFacebookLine(line)
@@ -36,7 +43,9 @@ if __name__ == "__main__":
                 posts_global += posts
 
         # Clean each line that has been loaded
-        return [posts_global]
+
+
+        return [len(posts_global)]
         # return [count]
 
     def combineListsLengths(count1, count2):
@@ -44,7 +53,6 @@ if __name__ == "__main__":
 
 
     ##### Data Cleaning Spark Functions
-
     def lineTokenizer(line):
         dataset_name = datasetName.value
         posts = []
@@ -57,11 +65,10 @@ if __name__ == "__main__":
             posts = LineParser.parseRedditLine(line, dataset_name)
         elif "twitter" in dataset_name:
             posts = LineParser.parseTwitterLine(line, dataset_name)
-
         terms = []
         if len(posts) == 1:
             # tokenizer = RegexpTokenizer(r'\w+')
-            terms = posts[0].content.lower().split("\w+")
+            terms = posts[0].content.lower().split()
         return terms
 
     # Compiles a dictionary of terms using a basic term count distribution and MR design pattern
@@ -72,6 +79,8 @@ if __name__ == "__main__":
         count = count1 + count2
         return count
 
+
+    #
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -119,13 +128,19 @@ if __name__ == "__main__":
         # y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
         # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
 
-        tokens_dict = rawPostsFile\
+        # get the token dictionary
+        tokensDict = rawPostsFile\
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
-            .collect()
+            .take(10)
+        print("Tokens dictionary size: %s" % str(tokensDict))
 
-        print("Tokens dictionary : %s" % str(tokens_dict))
+        # broadcast the token dictionary to the cluster
+        # tokensDictBroadcast = sc.broadcast(tokensDict)
+
+        # clean the posts and write them into HDFS from their respective paritions
+
 
         # # 0. Calculate the number of posts within the dataset
         # print "Original Dataset Number of Posts = " + str(len(dataset.posts))
