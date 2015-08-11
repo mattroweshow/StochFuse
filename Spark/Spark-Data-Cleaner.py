@@ -18,13 +18,17 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets2.json"
 
 
+    def lineMapperLists(lines):
+        posts_rdd = lines.map(lineMapper).reduceByKey(reduceDatasets)
+        return posts_rdd
+
     ##### Map-Reduce Functions
     ###### For processing export file
     def lineMapper(line):
         # test that MR is actually working!
 #        vals = line.split("\t")
 #        vals_length = len(vals)
-        # get the topics from the broadcast
+
         dataset_name = datasetName.value
 
         # process each line using the designated line processor for the dataset - given the different
@@ -46,6 +50,7 @@ if __name__ == "__main__":
     def reduceDatasets(posts1, posts2):
         posts = posts1 + posts2
         return posts
+
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -86,10 +91,10 @@ if __name__ == "__main__":
         print("-----Computing partition-level MR job..")
 
         # Effort 2: running mapPartitions
-        y = rawPostsFile.mapPartitions(lambda lines: len((lines.map(lineMapper).reduceByKey(reduceDatasets))[0][1]) for line in lines)
-        output = sum(y)
-        print("-----Result Array: %s" % y)
-        print("-----Result: %s" % str(output))
+        y = rawPostsFile.mapPartitions(lineMapperLists).collect()
+        # output = sum(y)
+        print("-----Result Array: %s" % str(y))
+        # print("-----Result: %s" % str(output))
         
         
 
