@@ -36,41 +36,12 @@ if __name__ == "__main__":
             elif "twitter" in dataset_name:
                 posts = LineParser.parseTwitterLine(line, dataset_name)
                 posts_global += posts
+
         return [len(posts_global)]
         # return [count]
 
     def combineListsLengths(count1, count2):
         return count1 + count2
-
-    def lineMapper(line):
-        # test that MR is actually working!
-#        vals = line.split("\t")
-#        vals_length = len(vals)
-
-        dataset_name = datasetName.value
-
-        # process each line using the designated line processor for the dataset - given the different
-        # formats that the data comes in
-        if "facebook" in dataset_name:
-            posts = LineParser.parseFacebookLine(line)
-            return(dataset_name, posts)
-        elif "boards" in dataset_name:
-            posts = LineParser.parseBoardsLine(line)
-            return (dataset_name, posts)
-        elif "reddit" in dataset_name:
-            posts = LineParser.parseRedditLine(line, dataset_name)
-            return (dataset_name, posts)
-        elif "twitter" in dataset_name:
-            posts = LineParser.parseTwitterLine(line, dataset_name)
-            return (dataset_name, posts)
-
-    #### Combines the posts together
-    def reduceDatasets(posts1, posts2):
-        posts = posts1 + posts2
-        return posts
-
-
-
 
 
     ##### Main Execution Code
@@ -115,7 +86,8 @@ if __name__ == "__main__":
         # Effort 2: running mapPartitions
         # y = rawPostsFile.mapPartitions(lineMapperLists).collect()
 
-        y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
+        # y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
+        y = rawPostsFile.mapPartitions(lineMapperLists).collect()
 
         # output = sum(y)
         print("-----Result Array: %s" % str(y))
