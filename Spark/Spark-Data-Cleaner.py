@@ -92,7 +92,10 @@ if __name__ == "__main__":
         print("-----Computing partition-level MR job..")
 
         # Effort 2: running mapPartitions
-        y = rawPostsFile.mapPartitions(lineMapperLists).collect()
+        # y = rawPostsFile.mapPartitions(lineMapperLists).collect()
+
+        y = rawPostsFile.mapPartitions(lambda x: [len(x)]).collect()
+
         # output = sum(y)
         print("-----Result Array: %s" % str(y))
         # print("-----Result: %s" % str(output))
