@@ -124,7 +124,7 @@ if __name__ == "__main__":
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)
 
-        print("Tokens dictionary : %s" % str(y))
+        print("Tokens dictionary : %s" % str(len(y)))
 
         # # 0. Calculate the number of posts within the dataset
         # print "Original Dataset Number of Posts = " + str(len(dataset.posts))
