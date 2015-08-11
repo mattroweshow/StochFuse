@@ -18,9 +18,8 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets2.json"
 
 
-    def lineMapperLists(lines):
+    def cleanLines(lines):
         posts_global = []
-        count = 0
         dataset_name = datasetName.value
         for line in lines:
             if "facebook" in dataset_name:
@@ -37,7 +36,8 @@ if __name__ == "__main__":
                 posts = LineParser.parseTwitterLine(line, dataset_name)
                 posts_global += posts
 
-        return [len(posts_global)]
+        # Clean each line that has been loaded
+        return [posts_global]
         # return [count]
 
     def combineListsLengths(count1, count2):
@@ -87,10 +87,10 @@ if __name__ == "__main__":
         # y = rawPostsFile.mapPartitions(lineMapperLists).collect()
 
         # y = rawPostsFile.mapPartitions(lineMapperLists).reduce(combineListsLengths)
-        y = rawPostsFile.mapPartitions(lineMapperLists).collect()
+        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
 
         # output = sum(y)
-        print("-----Result Array: %s" % str(y))
+        print("-----Result Array: %s" % str())
         # print("-----Result: %s" % str(output))
         
         
