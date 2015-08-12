@@ -157,7 +157,7 @@ if __name__ == "__main__":
             .sortByKey()\
             .collectAsMap()
         print("Tokens dictionary size: %s" % str(len(tokensDict)))
-        print("Tokens dictionary: %s" % str(tokensDict))
+        # print("Tokens dictionary: %s" % str(tokensDict))
 
         # broadcast the token dictionary to the cluster
         tokensDictBroadcast = sc.broadcast(tokensDict)
