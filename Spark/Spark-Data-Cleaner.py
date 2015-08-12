@@ -154,6 +154,8 @@ if __name__ == "__main__":
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
+            .collectAsMap()\
+            .sortByKey()\
             .take(20)
         print("Tokens dictionary size: %s" % str(len(tokensDict)))
         print("Tokens dictionary: %s" % str(tokensDict))
