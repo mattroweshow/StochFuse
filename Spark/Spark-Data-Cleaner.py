@@ -161,6 +161,9 @@ if __name__ == "__main__":
         # broadcast the token dictionary to the cluster
         tokensDictBroadcast = sc.broadcast(tokensDict)
 
+        # test pulling a record from the RDD
+        print("Testing key entry to pull value: %s" % str(tokensDict['pro-ogitive']))
+
 
         # clean the posts and write them into HDFS from their respective paritions
         # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
