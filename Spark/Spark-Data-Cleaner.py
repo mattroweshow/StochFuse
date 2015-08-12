@@ -93,7 +93,7 @@ if __name__ == "__main__":
         return count
 
 
-    #
+
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
@@ -154,13 +154,15 @@ if __name__ == "__main__":
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
-            .take(10)
-        print("Tokens dictionary size: %s" % str(tokensDict))
+            .collect()
+        print("Tokens dictionary size: %s" % str(len(tokensDict)))
 
         # broadcast the token dictionary to the cluster
         tokensDictBroadcast = sc.broadcast(tokensDict)
 
         # clean the posts and write them into HDFS from their respective paritions
+        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
+        print("Cleaned output from partitions: %s" % str(y))
 
 
 
