@@ -3,7 +3,6 @@ from __future__ import print_function
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
 from Post import Post
-from nltk.corpus import stopwords
 
 if __name__ == "__main__":
 
@@ -24,6 +23,7 @@ if __name__ == "__main__":
         # receive the broadcast variables
         dataset_name = datasetName.value
         tokensDictBroadcastV = tokensDictBroadcast.value
+        stopwords = stopwordsSet.value
 
         for line in lines:
             if "facebook" in dataset_name:
@@ -42,13 +42,12 @@ if __name__ == "__main__":
 
         # Clean each line that has been loaded
         minFreq = 5
-        cachedStopWords = stopwords.words("english")
         newPosts = []
         for post in posts_global:
             newMessage = ""
             terms = post.content.lower().split()
             for term in terms:
-                if tokensDictBroadcastV[term] >= minFreq and term not in cachedStopWords:
+                if tokensDictBroadcastV[term] >= minFreq and term not in stopwords:
                     # Create the new post
                     newMessage += term + " "
                     
@@ -127,6 +126,12 @@ if __name__ == "__main__":
         # broadcast the name of the dataset to the cluster
         print("----Broadcasting the name of the dataset being processed")
         datasetName = sc.broadcast(dataset)
+
+        # Load the stopwords file from hdfs
+        print("----Loading stopwords file and broadcasting to the cluster")
+        stopwordsFile = sc.textFile("hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/stopwords.csv")
+        stopwords = stopwordsFile.flatMap(lambda x: set(x)).reduce(lambda x, y: x + y)
+        stopwordsSet = sc.broadcast(stopwords)
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
         print("-----Dataset file: " + hdfsUrl)
