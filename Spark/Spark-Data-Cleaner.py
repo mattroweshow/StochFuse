@@ -131,6 +131,7 @@ if __name__ == "__main__":
         print("----Loading stopwords file and broadcasting to the cluster")
         stopwordsFile = sc.textFile("hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/stopwords.csv")
         stopwords = stopwordsFile.flatMap(lambda x: set(x)).reduce(lambda x, y: x + y)
+        print("---Stopword: %s" % str(stopwords))
         stopwordsSet = sc.broadcast(stopwords)
 
         # run a map-reduce job to first compile the RDD for the dataset loaded from the file
