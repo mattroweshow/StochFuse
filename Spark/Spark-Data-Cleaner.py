@@ -155,7 +155,6 @@ if __name__ == "__main__":
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
             .sortByKey()\
-            .take(20)\
             .collectAsMap()
         print("Tokens dictionary size: %s" % str(len(tokensDict)))
         print("Tokens dictionary: %s" % str(tokensDict))
