@@ -154,15 +154,17 @@ if __name__ == "__main__":
             .flatMap(lineTokenizer)\
             .map(tokenFrequencyMapper)\
             .reduceByKey(tokenFrequencyReducer)\
-            .collect()
+            .take(20)
         print("Tokens dictionary size: %s" % str(len(tokensDict)))
+        print("Tokens dictionary: %s" % str(tokensDict))
 
         # broadcast the token dictionary to the cluster
         tokensDictBroadcast = sc.broadcast(tokensDict)
 
+
         # clean the posts and write them into HDFS from their respective paritions
-        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
-        print("Cleaned output from partitions: %s" % str(y))
+        # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
+        # print("Cleaned output from partitions: %s" % str(y))
 
 
 
