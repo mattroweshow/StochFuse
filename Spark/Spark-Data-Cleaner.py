@@ -55,7 +55,17 @@ if __name__ == "__main__":
         newPosts = []
         for post in posts_global:
             newMessage = ""
-            terms = post.content.lower().split()
+            postContent = post.content.lower()
+
+            # prep the content by removing punctuation
+            postContent = postContent.replace("'", "").replace(".", "").replace(",", "")
+            # remove the square brackets content
+            postContent = postContent.replace("[b]", "").replace("[/b]", "")
+            postContent = postContent.replace("[i]", "").replace("[/i]", "")
+            postContent = postContent.replace("[quote]", "").replace("[/quote]", "")
+            postContent = postContent.replace("[url]", "").replace("[/url]", "")
+
+            terms = postContent.split()
             for term in terms:
                 if tokensDictBroadcastV[term] >= minFreq and term not in stopwords:
                     # Create the new post
@@ -180,7 +190,7 @@ if __name__ == "__main__":
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
         cleanedLines = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True)\
             .saveAsTextFile(cleanFileLocation)
-        print("Cleaned output from partitions: %s" % str(len(cleanedLines)))
+        # print("Cleaned output from partitions: %s" % str(len(cleanedLines)))
             # .collect()
 
         # Save the file to HDFS
