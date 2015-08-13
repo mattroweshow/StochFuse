@@ -176,14 +176,15 @@ if __name__ == "__main__":
         # print("Testing key entry to pull value: %s" % str(tokensDict['pro-ogitive']))
 
         # clean the posts and write them into HDFS from their respective paritions
-        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True)\
+        cleanedLines = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True)\
             .collect()
         print("Cleaned output from partitions: %s" % str(len(y)))
 
         # Save the file to HDFS
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
         print("Writing to HDFS")
-        y.saveAsTextFile(cleanFileLocation)
+        cleanedLines_RDD = sc.parallelize(cleanedLines).collect()
+        cleanedLines_RDD.saveAsTextFile(cleanFileLocation)
 
         sc.stop()
 
