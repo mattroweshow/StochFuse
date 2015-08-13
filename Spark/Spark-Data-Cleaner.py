@@ -17,6 +17,16 @@ if __name__ == "__main__":
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets2.json"
 
+    def getHDFSCleanedFileLocation(dataset_name):
+        if dataset_name is "facebook":
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/facebook/facebook-cleaned-posts.tsv"
+        elif dataset_name is "boards":
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-cleaned-posts.tsv"
+        elif dataset_name is "reddit":
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-cleaned-posts.tsv"
+        elif dataset_name is "twitter":
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets-cleaned-posts.tsv"
+
     def cleanLines(lines):
         posts_global = []
 
@@ -55,11 +65,11 @@ if __name__ == "__main__":
             if len(newMessage) > 0:
                 newPost = Post(post.author, post.postid, post.forumid, post.date)
                 newPost.addContent(newMessage)
-                newPosts.append(newPost)
+                newPosts.append(newPost.toTSVString())
 
         # Write the new posts to HDFS
 
-        return [len(newPosts)]
+        return [newPosts]
         # return [count]
 
     def combineListsLengths(count1, count2):
@@ -166,70 +176,15 @@ if __name__ == "__main__":
         # print("Testing key entry to pull value: %s" % str(tokensDict['pro-ogitive']))
 
         # clean the posts and write them into HDFS from their respective paritions
-        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
-        print("Cleaned output from partitions: %s" % str(y))
+        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True)\
+            .collect()
+        print("Cleaned output from partitions: %s" % str(len(y)))
 
+        # Save the file to HDFS
+        cleanFileLocation = getHDFSCleanedFileLocation(dataset)
+        print("Writing to HDFS")
+        y.saveAsTextFile(cleanFileLocation)
 
-
-        # # 0. Calculate the number of posts within the dataset
-        # print "Original Dataset Number of Posts = " + str(len(dataset.posts))
-        # print "# terms = " + str(calculateTermDimensionality(dataset))
-        #
-        # # Apply the pre-processing
-        # # 1. Remove Sparse Terms
-        # minFreq = 5
-        # newDataset = removeSparseTerms(dataset, minFreq)
-        # print "# Posts after removing sparse terms = " + str(len(newDataset.posts))
-        # print "# terms = " + str(calculateTermDimensionality(newDataset))
-        #
-        # # 2. Remove Stopwords
-        # newDataset2 = removeStopWords(newDataset)
-        # print "# Posts after removing stop words = " + str(len(newDataset2.posts))
-        # print "# terms = " + str(calculateTermDimensionality(newDataset2))
-        #
-        # # 3. Perform stemming
-        # newDataset3 = stemWords(newDataset2)
-        # print "# Posts after stemming = " + str(len(newDataset3.posts))
-        # print "# terms = " + str(calculateTermDimensionality(newDataset3))
-        #
-        # # Write to the file
-        # newVersion = "cleaned"
-        # fileWriter = FileWriter(datasetName)
-        # fileWriter.writeDatasetToFile(newDataset3, newVersion)
-
-        # output = sum(y)
-        # print("-----Result Array: %s" % str())
-        # print("-----Result: %s" % str(output))
-        
-        
-
-#        #### Effort 1:  define the partition filter function
-#        def make_part_filter(index):
-#            def part_filter(split_index, iterator):
-#                if split_index == index:
-#                    for el in iterator:
-#                        yield el
-#            return part_filter
-#
-#        # iterate through each partition of the file
-#        posts_count = 0
-#
-#        for part_id in range(rawPostsFile.getNumPartitions()):
-#            print("----Patition id: " + str(part_id))
-#            part_rdd = rawPostsFile.mapPartitionsWithIndex(make_part_filter(part_id), True)\
-#                .map(lineMapper)\
-#                .reduceByKey(reduceDatasets)
-#            print("----Collecting parition result")
-#            data_from_part_rdd = part_rdd.collect()
-#
-#            # data_str = str(data_from_part_rdd)
-#            # print("%s elements: %s" % (part_id, data_str[0:50]))
-#            # ('facebook', [<Post.Post instance at 0x7f4adf28305
-#            # data_str = str(data_from_part_rdd[0])
-#            posts_count += len(data_from_part_rdd[0][1])
-#            print("%s" % str(len(data_from_part_rdd[0][1])))
-#
-#        print("Total posts count: %s" % str(posts_count))
         sc.stop()
 
 
