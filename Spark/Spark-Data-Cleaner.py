@@ -19,13 +19,13 @@ if __name__ == "__main__":
 
     def getHDFSCleanedFileLocation(dataset_name):
         if dataset_name is "facebook":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/facebook/facebook-cleaned-posts.tsv"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/facebook/facebook-cleaned-posts"
         elif dataset_name is "boards":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-cleaned-posts.tsv"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-cleaned-posts"
         elif dataset_name is "reddit":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-cleaned-posts.tsv"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-cleaned-posts"
         elif dataset_name is "twitter":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets-cleaned-posts.tsv"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets-cleaned-posts"
 
     def cleanLines(lines):
         posts_global = []
