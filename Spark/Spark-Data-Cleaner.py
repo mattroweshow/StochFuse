@@ -163,12 +163,11 @@ if __name__ == "__main__":
         tokensDictBroadcast = sc.broadcast(tokensDict)
 
         # test pulling a record from the RDD
-        print("Testing key entry to pull value: %s" % str(tokensDict['pro-ogitive']))
-
+        # print("Testing key entry to pull value: %s" % str(tokensDict['pro-ogitive']))
 
         # clean the posts and write them into HDFS from their respective paritions
-        # y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
-        # print("Cleaned output from partitions: %s" % str(y))
+        y = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True).collect()
+        print("Cleaned output from partitions: %s" % str(y))
 
 
 
