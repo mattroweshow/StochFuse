@@ -178,7 +178,7 @@ if __name__ == "__main__":
         # clean the posts and write them into HDFS from their respective paritions
         cleanedLines = rawPostsFile.mapPartitions(cleanLines, preservesPartitioning=True)\
             .collect()
-        print("Cleaned output from partitions: %s" % str(len(y)))
+        print("Cleaned output from partitions: %s" % str(len(cleanedLines)))
 
         # Save the file to HDFS
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
