@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     # set the datasets to be processed
     # datasets = ["facebook"]
-    datasets = ["reddit"]
+    datasets = ["boards"]
 
 
     # clean each dataset
