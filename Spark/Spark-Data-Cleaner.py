@@ -101,7 +101,18 @@ if __name__ == "__main__":
         terms = []
         if len(posts) == 1:
             # tokenizer = RegexpTokenizer(r'\w+')
-            terms = posts[0].content.lower().split()
+            # terms = posts[0].content.lower().split()
+            postContent = posts[0].content.lower()
+
+            # prep the content by removing punctuation
+            postContent = postContent.replace("'", "").replace(".", "").replace(",", "")
+            # remove the square brackets content
+            postContent = postContent.replace("[b]", "").replace("[/b]", "")
+            postContent = postContent.replace("[i]", "").replace("[/i]", "")
+            postContent = postContent.replace("[quote]", "").replace("[/quote]", "")
+            postContent = postContent.replace("[url]", "").replace("[/url]", "")
+
+            terms = postContent.split()
         return terms
 
     # Compiles a dictionary of terms using a basic term count distribution and MR design pattern
