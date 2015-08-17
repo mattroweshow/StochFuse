@@ -67,7 +67,8 @@ class LineParser(object):
         content = content.replace("\t", "")
         content = content.replace("\n", "")
 
-        date = datetime.strptime(j['created_utc'], '%Y-%m-%d %H:%M:%S')
+        # handle unix timestamp long format
+        date = datetime.fromtimestamp(int(j['created_utc']))
 
         post = Post(userid, postid, forumid, date)
         post.addContent(content)

@@ -23,7 +23,7 @@ if __name__ == "__main__":
         elif dataset_name is "boards":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-cleaned-posts"
         elif dataset_name is "reddit":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-cleaned-posts"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/reddit/uncompressed"
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets-cleaned-posts"
 
@@ -122,9 +122,6 @@ if __name__ == "__main__":
     def tokenFrequencyReducer(count1, count2):
         count = count1 + count2
         return count
-
-
-
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Dataset Cleaning")
