@@ -13,7 +13,7 @@ if __name__ == "__main__":
         elif dataset_name is "boards":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-posts.tsv"
         elif dataset_name is "reddit":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/reddit/reddit-all.json"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/reddit/uncompressed"
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets2.json"
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         elif dataset_name is "boards":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/boards/boards-cleaned-posts"
         elif dataset_name is "reddit":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/reddit/uncompressed"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/reddit/reddit-cleaned-posts"
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/tweets-cleaned-posts"
 
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
     # set the datasets to be processed
     # datasets = ["facebook"]
-    datasets = ["boards"]
+    datasets = ["reddit"]
 
 
     # clean each dataset
