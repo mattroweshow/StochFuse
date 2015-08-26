@@ -100,7 +100,9 @@ class LineParser(object):
         ### "Sun Apr 03 20:24:49 +0000 2011"
         dateString = j['created_at']
         # remove the UTC offset
+        print(dateString)
         dateString = dateString.replace("\+\d{4}", "")
+        print(dateString)
 
         date = datetime.strptime(dateString, '%a %b %d %H:%M:%S %Y')
         # date = dateutil.parser.parser(j['created_at'])
