@@ -1,6 +1,7 @@
 __author__ = 'rowem'
 
 from datetime import datetime
+import re
 import json
 from Dataset import Dataset
 from Post import Post
@@ -101,7 +102,7 @@ class LineParser(object):
         dateString = j['created_at']
         # remove the UTC offset
         print(dateString)
-        dateString = dateString.replace("\+\d{4}", "")
+        dateString = re.sub(r"\s\+\d{4}", "", dateString)
         print(dateString)
 
         date = datetime.strptime(dateString, '%a %b %d %H:%M:%S %Y')
