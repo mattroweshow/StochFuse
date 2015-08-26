@@ -4,7 +4,6 @@ from datetime import datetime
 import json
 from Dataset import Dataset
 from Post import Post
-import dateutil.parser
 
 class LineParser(object):
 
@@ -99,8 +98,12 @@ class LineParser(object):
 
         ### Wed Aug 20 21:51:49 +0000 2014
         ### "Sun Apr 03 20:24:49 +0000 2011"
-        # date = datetime.strptime(j['created_at'], '%a %b %d %H:%M:%S %z %Y')
-        date = dateutil.parser.parser(j['created_at'])
+        dateString = j['created_at']
+        # remove the UTC offset
+        dateString = dateString.replace("\+\d{4}", "")
+
+        date = datetime.strptime(dateString, '%a %b %d %H:%M:%S %Y')
+        # date = dateutil.parser.parser(j['created_at'])
 
         post = Post(userid, postid, forumid, date)
         post.addContent(content)
