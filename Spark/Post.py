@@ -16,7 +16,7 @@ class Post:
         self.date = date
 
     def __str__(self):
-        return self.author + " | " + self.postid + " | " + self.forumid + " | " + self.date + " | " + self.content
+        return self.author + " | " + str(self.postid) + " | " + str(self.forumid) + " | " + self.date + " | " + self.content
 
 
     def addContent(self, content):
@@ -25,5 +25,5 @@ class Post:
 
     # post_id group_id        user_id message created_time
     def toTSVString(self):
-        return self.postid + "\t" + self.forumid + "\t" + self.author + "\t" + self.content + "\t" + str(self.date)
+        return str(self.postid) + "\t" + str(self.forumid) + "\t" + self.author + "\t" + self.content + "\t" + str(self.date)
 
