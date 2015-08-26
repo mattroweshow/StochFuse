@@ -88,7 +88,7 @@ class LineParser(object):
 
         # check that geo is not null
         forumid = "none"
-        if j['geo'] is not None:
+        if "null" not in str(j['geo']):
             forumid = str(j['coordinates'][0]) + "-" + str(j['coordinates'][1])
 
         # get the content and clean it
