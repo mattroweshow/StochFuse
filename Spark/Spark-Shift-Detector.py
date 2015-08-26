@@ -40,17 +40,16 @@ if __name__ == "__main__":
 
     def weekPostsMapper(post):
 
-        min_date = minDate.value
-        max_date = maxDate.value
+        startDate = minDate.value
+        endDate = maxDate.value
         total_weeks = totalWeeks.value
 
         # log week key
         week_key = 1
-
-        for i in range(1, totalWeeks):
+        for i in range(1, total_weeks):
             # print "Processing week: " + str(i)
             # get the start of the window
-            startWindow = min_date
+            startWindow = startDate
             weeksDelta = timedelta(days = 7)
             endWindow = startWindow + weeksDelta
 
@@ -66,17 +65,8 @@ if __name__ == "__main__":
         return (week_key, posts)
 
     def weekPostsReducer(posts1, posts2):
-        posts = posts1
-        posts = posts.union(posts2)
-
-
-
-
-
-
-
-
-
+        posts = posts1 + posts2
+        return posts
 
 
     ##### Main Execution Code
@@ -88,7 +78,7 @@ if __name__ == "__main__":
     conf.set("spark.mesos.coarse", "true")
     conf.set("spark.driver.maxResultSize", "10g")
     # Added the core limit to avoid resource allocation overruns
-    conf.set("spark.cores.max", "10")
+    conf.set("spark.cores.max", "5")
 #    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
     conf.setMaster("mesos://zk://scc-culture-slave4.lancs.ac.uk:2181/mesos")
     conf.set("spark.executor.uri", "hdfs://scc-culture-mind.lancs.ac.uk/lib/spark-1.3.0-bin-hadoop2.4.tgz")
@@ -108,7 +98,9 @@ if __name__ == "__main__":
         # Load the data into an RDD (shared across the cluster)
         print("----Loading the cleaned posts RDD")
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
-        postsRDD = cleanFileLocation.flatMap(lineLoader).collect()
+        cleanedFile = sc.textFile(cleanFileLocation)
+        postsRDD = cleanedFile.flatMap(lineLoader).collect()
+        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # get the minimum and maximum dates from the RDD's posts
         print("----Getting dates RDD and computing min and max dates for window")
@@ -123,12 +115,23 @@ if __name__ == "__main__":
         minDate = sc.broadcast(minDate)
         maxDate = sc.broadcast(maxDate)
         totalWeeks = sc.broadcast(totalWeeks)
+        print("--------Start date: %s" % str(minDate))
+        print("--------End date: %s" % str(maxDate))
+        print("--------Total weeks: %s" % str(totalWeeks))
 
         # Derive the burn-in window over the first 25% of data
+        print("----Computing posts to week number")
+        weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), weekPostsReducer).collect()
+        print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
+        # Filter to the 25% week number
+        weekCutoff = int(0.25 * totalWeeks)
+        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
 
 
-
+        #### check point - ensure that the code works up to this point
         # Derive burn-in distribution for each term signal - over the first 25% of data
+
 
         # Run per-week analysis of each token's signal: update the dirichlet each week
 
