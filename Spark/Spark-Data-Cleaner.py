@@ -25,7 +25,7 @@ if __name__ == "__main__":
         elif dataset_name is "reddit":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/reddit/reddit-cleaned-posts"
         elif dataset_name is "twitter":
-            return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/twitter-cleaned-posts"
+            return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/twitter/twitter-cleaned-posts"
 
     def cleanLines(lines):
         posts_global = []
