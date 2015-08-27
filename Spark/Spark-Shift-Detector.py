@@ -111,7 +111,7 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        postsRDD = cleanedFile.map(testMap).reduceByKey(testReduce).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x[0].split()).map(testMap).reduceByKey(testReduce).collect()
 
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 

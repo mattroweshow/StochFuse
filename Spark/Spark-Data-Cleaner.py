@@ -6,6 +6,7 @@ from Post import Post
 
 if __name__ == "__main__":
 
+
     ##### Utility functions
     def getHDFSFileLocation(dataset_name):
         if dataset_name is "facebook":
