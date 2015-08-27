@@ -100,7 +100,7 @@ if __name__ == "__main__":
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
         cleanedFile = sc.textFile(cleanFileLocation)
         postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
+        print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
         # get the minimum and maximum dates from the RDD's posts
         # print("----Getting dates RDD and computing min and max dates for window")
