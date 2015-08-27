@@ -9,7 +9,7 @@ if __name__ == "__main__":
     #### Test Functions
     def testMap(line):
         # This gets the length of the line
-        lineTokens = type(line)
+        lineTokens = line.trim().replace("\'", "")
 
         return (lineTokens, 1)
 
