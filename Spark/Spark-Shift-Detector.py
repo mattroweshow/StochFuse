@@ -8,8 +8,14 @@ if __name__ == "__main__":
 
     #### Test Functions
     def testMap(line):
-        lineTokens = len(line)
-        return (lineTokens, 1)
+        # This gets the length of the line
+        # lineTokens = len(line)
+        # return (lineTokens, 1)
+
+        ## assumes that line is a tab delimited string
+        lineTokens = line.split("\t")
+        return (len(lineTokens), 1)
+
 
     def testReduce(count1, count2):
         count = count1 + count2
@@ -111,7 +117,7 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        postsRDD = cleanedFile.map(testMap).reduceByKey(testReduce).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split()).map(testMap).reduceByKey(testReduce).collect()
 
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
