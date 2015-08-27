@@ -13,12 +13,12 @@ if __name__ == "__main__":
 
         # This gets the length of the line
         lineTokens = line.replace("\'", "")
-
-        return (len(lineTokens), 1)
-
         ## assumes that line is a tab delimited string
-        # lineTokens = str(line).split("\t")
-        # return (len(lineTokens), 1)
+        lineTokens = str(line).split("\t")
+        return (len(lineTokens), 1)
+            
+
+
 
 
     def testReduce(count1, count2):
