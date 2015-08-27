@@ -25,5 +25,5 @@ class Post:
 
     # post_id group_id        user_id message created_time
     def toTSVString(self):
-        return str(self.postid) + "\t" + str(self.forumid) + "\t" + self.author + "\t" + self.content + "\t" + str(self.date)
+        return str(self.postid) + "\t" + str(self.forumid) + "\t" + str(self.author) + "\t" + str(self.content) + "\t" + str(self.date)
 
