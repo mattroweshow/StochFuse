@@ -12,7 +12,7 @@ if __name__ == "__main__":
         line = line.encode('ascii','ignore')
 
         # This gets the length of the line
-        lineTokens = line.trim().replace("\'", "")
+        lineTokens = line.replace("\'", "")
 
         return (len(lineTokens), 1)
 
