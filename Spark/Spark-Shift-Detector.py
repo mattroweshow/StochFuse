@@ -103,30 +103,30 @@ if __name__ == "__main__":
         print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # get the minimum and maximum dates from the RDD's posts
-        print("----Getting dates RDD and computing min and max dates for window")
-        datesRDD = postsRDD.flatMap(stripDates).collect()
-        minDate = datesRDD.min()
-        maxDate = datesRDD.max()
-        # work out the total number of weeks that the entire dataset covers
-        timeDelta = maxDate - minDate
-        daysDelta = timeDelta.days
-        totalWeeks = daysDelta / 7
-        # broadcast variables to the cluster to use within the map operations
-        minDate = sc.broadcast(minDate)
-        maxDate = sc.broadcast(maxDate)
-        totalWeeks = sc.broadcast(totalWeeks)
-        print("--------Start date: %s" % str(minDate))
-        print("--------End date: %s" % str(maxDate))
-        print("--------Total weeks: %s" % str(totalWeeks))
-
-        # Derive the burn-in window over the first 25% of data
-        print("----Computing posts to week number")
-        weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), weekPostsReducer).collect()
-        print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
-        # Filter to the 25% week number
-        weekCutoff = int(0.25 * totalWeeks)
-        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
+        # print("----Getting dates RDD and computing min and max dates for window")
+        # datesRDD = postsRDD.flatMap(stripDates).collect()
+        # minDate = datesRDD.min()
+        # maxDate = datesRDD.max()
+        # # work out the total number of weeks that the entire dataset covers
+        # timeDelta = maxDate - minDate
+        # daysDelta = timeDelta.days
+        # totalWeeks = daysDelta / 7
+        # # broadcast variables to the cluster to use within the map operations
+        # minDate = sc.broadcast(minDate)
+        # maxDate = sc.broadcast(maxDate)
+        # totalWeeks = sc.broadcast(totalWeeks)
+        # print("--------Start date: %s" % str(minDate))
+        # print("--------End date: %s" % str(maxDate))
+        # print("--------Total weeks: %s" % str(totalWeeks))
+        #
+        # # Derive the burn-in window over the first 25% of data
+        # print("----Computing posts to week number")
+        # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), weekPostsReducer).collect()
+        # print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
+        # # Filter to the 25% week number
+        # weekCutoff = int(0.25 * totalWeeks)
+        # cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        # print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
 
 
         #### check point - ensure that the code works up to this point
