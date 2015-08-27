@@ -9,7 +9,7 @@ if __name__ == "__main__":
     #### Test Functions
     def testMap(line):
         lineTokens = len(line)
-        return (line, 1)
+        return (lineTokens, 1)
 
     def testReduce(count1, count2):
         count = count1 + count2
