@@ -10,6 +10,7 @@ if __name__ == "__main__":
     def testMap(line):
         # This gets the length of the line
         lineTokens = line
+        print(line)
         return (lineTokens, 1)
 
         ## assumes that line is a tab delimited string
@@ -119,7 +120,7 @@ if __name__ == "__main__":
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
         postsRDD = cleanedFile.flatMap(lambda x: x.split()).map(testMap).reduceByKey(testReduce).collect()
 
-        print("----Cleaned posts RDD length : %s" % str(postsRDD))
+        # print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
         # get the minimum and maximum dates from the RDD's posts
         # print("----Getting dates RDD and computing min and max dates for window")
