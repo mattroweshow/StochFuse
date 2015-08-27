@@ -3,6 +3,7 @@ from __future__ import print_function
 from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
 from Post import Post
+import re
 
 if __name__ == "__main__":
 
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         newPosts = []
         for post in posts_global:
             newMessage = ""
-            postContent = post.content.lower()
+            postContent = post.content.lower().encode("utf-8")
 
             # prep the content by removing punctuation
             postContent = postContent.replace("'", "").replace(".", "").replace(",", "")
@@ -65,6 +66,8 @@ if __name__ == "__main__":
             postContent = postContent.replace("[i]", "").replace("[/i]", "")
             postContent = postContent.replace("[quote]", "").replace("[/quote]", "")
             postContent = postContent.replace("[url]", "").replace("[/url]", "")
+            pat = re.compile(r"\t")
+            postContent = pat.sub(" ", postContent)
 
             terms = postContent.split()
             for term in terms:
@@ -103,7 +106,7 @@ if __name__ == "__main__":
         if len(posts) == 1:
             # tokenizer = RegexpTokenizer(r'\w+')
             # terms = posts[0].content.lower().split()
-            postContent = posts[0].content.lower()
+            postContent = posts[0].content.lower().encode("utf-8")
 
             # prep the content by removing punctuation
             postContent = postContent.replace("'", "").replace(".", "").replace(",", "")
@@ -112,6 +115,8 @@ if __name__ == "__main__":
             postContent = postContent.replace("[i]", "").replace("[/i]", "")
             postContent = postContent.replace("[quote]", "").replace("[/quote]", "")
             postContent = postContent.replace("[url]", "").replace("[/url]", "")
+            pat = re.compile(r"\t")
+            postContent = pat.sub(" ", postContent)
 
             terms = postContent.split()
         return terms
