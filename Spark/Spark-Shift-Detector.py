@@ -1,7 +1,7 @@
 __author__ = 'rowem'
 
 from pyspark import SparkContext, SparkConf
-from datetime import datetime, timedel
+from datetime import datetime, timedelta
 import re
 
 if __name__ == "__main__":
