@@ -1,8 +1,8 @@
 __author__ = 'rowem'
 
 from pyspark import SparkContext, SparkConf
-from datetime import datetime, timedelta
-from Post import Post
+from datetime import datetime, timedel
+import re
 
 if __name__ == "__main__":
 
@@ -13,7 +13,8 @@ if __name__ == "__main__":
         # return (lineTokens, 1)
 
         ## assumes that line is a tab delimited string
-        lineTokens = line
+        # lineTokens = line.split("\t")
+        lineTokens = re.split(r'\t+', line.rstrip('\t'))
         return (len(lineTokens), 1)
 
 
