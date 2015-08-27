@@ -14,9 +14,10 @@ if __name__ == "__main__":
         # This gets the length of the line
         line = line.replace("\'", "")
         ## assumes that line is a tab delimited string
-        lineTokens = line.split("\t")
+        lineTokens = line.split("\\t")
 
-        return (line, 1)
+        # return (line, 1)
+        return (len(lineTokens), 1)
 
 
 
