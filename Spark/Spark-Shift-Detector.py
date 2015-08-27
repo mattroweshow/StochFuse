@@ -10,7 +10,7 @@ if __name__ == "__main__":
     def testMap(line):
         # This gets the length of the line
         lineTokens = line
-        return (len(lineTokens), 1)
+        return (lineTokens, 1)
 
         ## assumes that line is a tab delimited string
         # lineTokens = str(line).split("\t")
