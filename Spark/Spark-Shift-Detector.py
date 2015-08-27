@@ -6,6 +6,17 @@ from Post import Post
 
 if __name__ == "__main__":
 
+    #### Test Functions
+    def testMap(line):
+        lineTokens = line.split("\t")
+        return (len(lineTokens), 1)
+
+    def testReduce(count1, count2):
+        count = count1 + count2
+        return count
+
+
+    #### Functions
     def getHDFSCleanedFileLocation(dataset_name):
         if dataset_name is "facebook":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/facebook/facebook-cleaned-posts"
@@ -15,7 +26,6 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/rowem/data/reddit/reddit-cleaned-posts"
         elif dataset_name is "twitter":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/twitter-cleaned-posts"
-
 
     def lineLoader(line):
         posts = []
@@ -99,7 +109,10 @@ if __name__ == "__main__":
         print("----Loading the cleaned posts RDD")
         cleanFileLocation = getHDFSCleanedFileLocation(dataset)
         cleanedFile = sc.textFile(cleanFileLocation)
-        postsRDD = cleanedFile.flatMap(lineLoader).collect()
+
+        # postsRDD = cleanedFile.flatMap(lineLoader).collect()
+        postsRDD = cleanedFile.map(testMap).reduceByKey(testReduce).collect()
+
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
         # get the minimum and maximum dates from the RDD's posts
