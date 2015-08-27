@@ -16,7 +16,7 @@ if __name__ == "__main__":
         # ## assumes that line is a tab delimited string
         # lineTokens = line.split("\\t")
 
-        return (str(line), 1)
+        return (type(line), 1)
         # return (len(lineTokens), 1)
 
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        postsRDD = cleanedFile.map(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
 
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
