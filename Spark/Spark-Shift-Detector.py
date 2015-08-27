@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     #### Test Functions
     def testMap(line):
-        lineTokens = line[0].split(",")
+        lineTokens = line[0]
         return (len(lineTokens), 1)
 
     def testReduce(count1, count2):
