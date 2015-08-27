@@ -9,8 +9,8 @@ if __name__ == "__main__":
     #### Test Functions
     def testMap(line):
         # This gets the length of the line
-        lineTokens = line
-        print(line)
+        lineTokens = type(line)
+
         return (lineTokens, 1)
 
         ## assumes that line is a tab delimited string
