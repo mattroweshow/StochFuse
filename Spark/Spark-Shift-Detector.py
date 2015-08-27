@@ -15,7 +15,7 @@ if __name__ == "__main__":
         line = line.replace("\'", "")
         ## assumes that line is a tab delimited string
         lineTokens = line.split("\t")
-        return (type(lineTokens), 1)
+        return (type(line), 1)
 
 
 
