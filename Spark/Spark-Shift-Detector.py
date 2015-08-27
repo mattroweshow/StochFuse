@@ -8,10 +8,13 @@ if __name__ == "__main__":
 
     #### Test Functions
     def testMap(line):
+        # convert the line to an asci representation from unicode so that it can be worked with
+        line = line.encode('ascii','ignore')
+
         # This gets the length of the line
         lineTokens = line.trim().replace("\'", "")
 
-        return (lineTokens, 1)
+        return (len(lineTokens), 1)
 
         ## assumes that line is a tab delimited string
         # lineTokens = str(line).split("\t")
