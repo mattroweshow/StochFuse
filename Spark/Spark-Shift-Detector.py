@@ -2,7 +2,7 @@ __author__ = 'rowem'
 
 from pyspark import SparkContext, SparkConf
 from datetime import datetime, timedelta
-import re
+from Post import Post
 
 if __name__ == "__main__":
 
@@ -10,7 +10,7 @@ if __name__ == "__main__":
     def testMap(line):
         # convert the line to an asci representation from unicode so that it can be worked with
         line = line.encode('ascii', 'ignore')
-        #
+
         # # This gets the length of the line
         line = line.replace("\'", "")
         # ## assumes that line is a tab delimited string
@@ -18,10 +18,6 @@ if __name__ == "__main__":
 
         return (len(lineTokens), 1)
         # return (len(lineTokens), 1)
-
-
-
-
 
     def testReduce(count1, count2):
         count = count1 + count2
@@ -40,8 +36,14 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/twitter-cleaned-posts"
 
     def lineLoader(line):
+        # convert the line to an asci representation from unicode so that it can be worked with
+        line = line.encode('ascii', 'ignore')
+        # # This gets the length of the line
+        line = line.replace("\'", "")
+        # ## assumes that line is a tab delimited string
+        lineTokens = line.split("\\t")
+
         posts = []
-        lineTokens = line.split("\t")
 
         if len(lineTokens) is 5:
             postid = lineTokens[0]
@@ -86,7 +88,7 @@ if __name__ == "__main__":
         posts.append(post)
         return (week_key, posts)
 
-    def weekPostsReducer(posts1, posts2):
+    def postsReducer(posts1, posts2):
         posts = posts1 + posts2
         return posts
 
@@ -123,7 +125,9 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        #### to here
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).reduceByKey(testReduce).collect()
 
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
