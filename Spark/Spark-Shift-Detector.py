@@ -13,7 +13,7 @@ if __name__ == "__main__":
         # return (lineTokens, 1)
 
         ## assumes that line is a tab delimited string
-        lineTokens = line.split("\t")
+        lineTokens = line
         return (len(lineTokens), 1)
 
 
