@@ -12,11 +12,11 @@ if __name__ == "__main__":
         line = line.encode('ascii','ignore')
 
         # This gets the length of the line
-        lineTokens = line.replace("\'", "")
+        line = line.replace("\'", "")
         ## assumes that line is a tab delimited string
-        lineTokens = str(line).split("\t")
+        lineTokens = line.split("\t")
         return (len(lineTokens), 1)
-            
+
 
 
 
