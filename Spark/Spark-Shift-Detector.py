@@ -132,6 +132,10 @@ if __name__ == "__main__":
 
         print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
+        # sample the first element of the rdd
+        post1 = postsRDD.first()
+        print(post1)
+
         # get the minimum and maximum dates from the RDD's posts
         # print("----Getting dates RDD and computing min and max dates for window")
         # datesRDD = postsRDD.flatMap(stripDates).collect()
