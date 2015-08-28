@@ -39,6 +39,9 @@ if __name__ == "__main__":
         stopwords = stopwordsSet.value
 
         for line in lines:
+            # clean the line
+            line = filter(lambda x: x in string.printable, line)
+
             if "facebook" in dataset_name:
                 posts = LineParser.parseFacebookLine(line)
                 posts_global += posts
@@ -96,6 +99,9 @@ if __name__ == "__main__":
     def lineTokenizer(line):
         dataset_name = datasetName.value
         posts = []
+
+        # clean the line
+        line = filter(lambda x: x in string.printable, line)
 
         if "facebook" in dataset_name:
             posts = LineParser.parseFacebookLine(line)

@@ -170,12 +170,10 @@ if __name__ == "__main__":
         print("----Computing posts to week number")
         # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer).collect()
         weekPostsRDD = postsRDD.map(weekPostsMapper).reduceByKey(postsReducer)
-        # print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
         # Filter to the 25% week number
         weekCutoff = int(0.25 * int(totalWeeks.value))
         cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
         print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
-
 
         #### check point - ensure that the code works up to this point
         # Derive burn-in distribution for each term signal - over the first 25% of data
