@@ -127,7 +127,7 @@ if __name__ == "__main__":
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
         # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
         #### to here
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).reduceByKey(testReduce).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
 
         print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
