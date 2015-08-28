@@ -51,7 +51,8 @@ if __name__ == "__main__":
             userid = lineTokens[2]
             content = lineTokens[3]
             # 2011-06-13 09:27:30
-            date = datetime.strptime(lineTokens[4], '%Y-%m-%d %H:%M:%S')
+            # date = datetime.strptime(lineTokens[4], '%Y-%m-%d %H:%M:%S')
+            date = lineTokens[4]
 
             post = Post(userid, postid, forumid, date)
             post.addContent(content)
