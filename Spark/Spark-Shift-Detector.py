@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
         # get the minimum and maximum dates from the RDD's posts
         print("----Getting dates RDD and computing min and max dates for window")
-        datesRDD = postsRDD.map(stripDates).collect()
+        datesRDD = postsRDD.map(stripDates)
         minDate = datesRDD.min()
         maxDate = datesRDD.max()
         # work out the total number of weeks that the entire dataset covers
