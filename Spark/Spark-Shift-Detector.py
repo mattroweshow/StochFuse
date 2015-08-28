@@ -71,7 +71,6 @@ if __name__ == "__main__":
         return date
 
     def weekPostsMapper(post):
-
         startDate = minDate.value
         endDate = maxDate.value
         total_weeks = totalWeeks.value
@@ -166,15 +165,14 @@ if __name__ == "__main__":
         print("--------End date: %s" % str(maxDate.value))
         print("--------Total weeks: %s" % str(totalWeeks.value))
 
-
         # # Derive the burn-in window over the first 25% of data
-        # print("----Computing posts to week number")
-        # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), weekPostsReducer).collect()
+        print("----Computing posts to week number")
+        weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer)
         # print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
-        # # Filter to the 25% week number
-        # weekCutoff = int(0.25 * totalWeeks)
-        # cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        # print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
+        # Filter to the 25% week number
+        weekCutoff = int(0.25 * totalWeeks)
+        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
 
 
         #### check point - ensure that the code works up to this point
