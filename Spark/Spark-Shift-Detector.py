@@ -130,7 +130,7 @@ if __name__ == "__main__":
         #### to here
         postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
 
-        print("----Cleaned posts RDD length : %s" % str(postsRDD))
+        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # get the minimum and maximum dates from the RDD's posts
         # print("----Getting dates RDD and computing min and max dates for window")
