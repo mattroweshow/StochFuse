@@ -16,7 +16,7 @@ class Post:
         self.date = date
 
     def __str__(self):
-        return self.author + " | " + str(self.postid) + " | " + str(self.forumid) + " | " + self.date + " | " + self.content
+        return self.author + " | " + str(self.postid) + " | " + str(self.forumid) + " | " + str(self.date) + " | " + self.content
 
 
     def addContent(self, content):
