@@ -173,7 +173,7 @@ if __name__ == "__main__":
         print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
         # Filter to the 25% week number
         weekCutoff = int(0.25 * int(totalWeeks.value))
-        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).collect()
         # cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).collect()
         print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
 
