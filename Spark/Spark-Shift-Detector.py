@@ -42,6 +42,7 @@ if __name__ == "__main__":
         line = line.encode('ascii', 'ignore')
 
         # # This gets the length of the line
+        line = line.replace("u\'", "")
         line = line.replace("\'", "")
         # ## assumes that line is a tab delimited string
         lineTokens = line.split("\\t")
