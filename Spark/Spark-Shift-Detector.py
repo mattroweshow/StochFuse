@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
             # get all posts within the interval
             if post.date >= startWindow and post.date < endWindow :
+                week_key = weeksDelta
                 break
 
             # knock on the start date by one week
