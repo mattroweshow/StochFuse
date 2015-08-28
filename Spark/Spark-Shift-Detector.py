@@ -139,8 +139,9 @@ if __name__ == "__main__":
         #     post1 = testPostsRDD[i][0]
         #     print(post1)
 
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).reduce()
-        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader)
+        # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
+        # print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # sample the first element of the rdd
         # print("\n----Posts RDD")
