@@ -128,14 +128,20 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(lineLoader).collect()
+        testPostsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
 
-        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
+        # print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
+
+        print("\n----Test RDD")
+        for i in range(0, 10, 1):
+            post1 = testPostsRDD[i][0]
+            print(post1)
 
         # sample the first element of the rdd
+        print("\n----Posts RDD")
         for i in range(0, 10, 1):
-            post1 = postsRDD[i][0]
+            post1 = postsRDD[i]
             print(post1)
 
         # get the minimum and maximum dates from the RDD's posts
