@@ -162,9 +162,9 @@ if __name__ == "__main__":
         minDate = sc.broadcast(minDate)
         maxDate = sc.broadcast(maxDate)
         totalWeeks = sc.broadcast(totalWeeks)
-        print("--------Start date: %s" % str(minDate))
-        print("--------End date: %s" % str(maxDate))
-        print("--------Total weeks: %s" % str(totalWeeks))
+        print("--------Start date: %s" % str(minDate.value))
+        print("--------End date: %s" % str(maxDate.value))
+        print("--------Total weeks: %s" % str(totalWeeks.value))
 
 
         # # Derive the burn-in window over the first 25% of data
