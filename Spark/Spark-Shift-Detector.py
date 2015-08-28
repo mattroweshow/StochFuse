@@ -139,7 +139,7 @@ if __name__ == "__main__":
         #     post1 = testPostsRDD[i][0]
         #     print(post1)
 
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).reduce()
         print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # sample the first element of the rdd
@@ -165,7 +165,7 @@ if __name__ == "__main__":
         print("--------End date: %s" % str(maxDate))
         print("--------Total weeks: %s" % str(totalWeeks))
 
-        
+
         # # Derive the burn-in window over the first 25% of data
         # print("----Computing posts to week number")
         # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), weekPostsReducer).collect()
