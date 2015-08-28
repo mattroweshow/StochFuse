@@ -55,7 +55,7 @@ if __name__ == "__main__":
             date = lineTokens[4]
 
             post = Post(userid, postid, forumid, date)
-            post.addContent(content)
+            post.addContent(line)
             posts.append(post)
         return posts
 
