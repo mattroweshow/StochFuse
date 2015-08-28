@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
         # sample the first element of the rdd
         for i in range(0, 10, 1):
-            post1 = postsRDD[i]
+            post1 = postsRDD[i][0]
             print(post1)
 
         # get the minimum and maximum dates from the RDD's posts
