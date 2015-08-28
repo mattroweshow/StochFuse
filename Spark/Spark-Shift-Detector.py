@@ -127,13 +127,12 @@ if __name__ == "__main__":
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
         # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
-        #### to here
         postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
 
         print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # sample the first element of the rdd
-        post1 = postsRDD.first()
+        post1 = postsRDD[0]
         print(post1)
 
         # get the minimum and maximum dates from the RDD's posts
