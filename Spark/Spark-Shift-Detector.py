@@ -77,20 +77,20 @@ if __name__ == "__main__":
 
         # log week key
         week_key = 1
+        startWindow = startDate
         for i in range(1, total_weeks):
             # print "Processing week: " + str(i)
             # get the start of the window
-            startWindow = startDate
             weeksDelta = timedelta(days = 7)
             endWindow = startWindow + weeksDelta
 
             # get all posts within the interval
-            if post.date >= startWindow and post.date < endWindow :
-                week_key = weeksDelta
+            if post.date >= startWindow and post.date < endWindow:
+                week_key = i
                 break
 
             # knock on the start date by one week
-            startDate = endWindow
+            startWindow = endWindow
 
         posts = []
         posts.append(post)
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         print("----Computing posts to week number")
         # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer).collect()
         weekPostsRDD = postsRDD.map(weekPostsMapper).reduceByKey(postsReducer).collect()
-        print("--------Week Posts RDD length: %s" % str(weekPostsRDD))
+        print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
         # Filter to the 25% week number
         # weekCutoff = int(0.25 * int(totalWeeks.value))
         # cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
