@@ -4,6 +4,7 @@ from pyspark import SparkContext, SparkConf
 from LineParser import LineParser
 from Post import Post
 import re
+import string
 
 if __name__ == "__main__":
 
@@ -57,7 +58,9 @@ if __name__ == "__main__":
         newPosts = []
         for post in posts_global:
             newMessage = ""
-            postContent = post.content.lower().encode("utf-8")
+            postString = post.content.lower()
+            postString = filter(lambda x: x in string.printable, postString)
+            postContent = postString.encode("utf-8")
 
             # prep the content by removing punctuation
             postContent = postContent.replace("'", "").replace(".", "").replace(",", "")
@@ -106,7 +109,9 @@ if __name__ == "__main__":
         if len(posts) == 1:
             # tokenizer = RegexpTokenizer(r'\w+')
             # terms = posts[0].content.lower().split()
-            postContent = posts[0].content.lower().encode("utf-8")
+            postString = posts[0].content.lower()
+            postString = filter(lambda x: x in string.printable, postString)
+            postContent = postString.encode("utf-8")
 
             # prep the content by removing punctuation
             postContent = postContent.replace("'", "").replace(".", "").replace(",", "")

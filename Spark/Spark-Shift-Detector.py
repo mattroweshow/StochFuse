@@ -174,13 +174,11 @@ if __name__ == "__main__":
         # Filter to the 25% week number
         weekCutoff = int(0.25 * int(totalWeeks.value))
         cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        # cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).collect()
         print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
 
 
         #### check point - ensure that the code works up to this point
         # Derive burn-in distribution for each term signal - over the first 25% of data
-
 
         # Run per-week analysis of each token's signal: update the dirichlet each week
 
