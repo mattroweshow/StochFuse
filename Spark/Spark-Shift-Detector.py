@@ -38,6 +38,7 @@ if __name__ == "__main__":
     def lineLoader(line):
         # convert the line to an asci representation from unicode so that it can be worked with
         line = line.encode('ascii', 'ignore')
+        lineOrig = line
         # # This gets the length of the line
         line = line.replace("\'", "")
         # ## assumes that line is a tab delimited string
@@ -55,7 +56,7 @@ if __name__ == "__main__":
             date = lineTokens[4]
 
             post = Post(userid, postid, forumid, date)
-            post.addContent(line)
+            post.addContent("Orginal line: " + lineOrig + " WITH mod line: " + line)
             posts.append(post)
         return posts
 
