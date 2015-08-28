@@ -167,7 +167,8 @@ if __name__ == "__main__":
 
         # # Derive the burn-in window over the first 25% of data
         print("----Computing posts to week number")
-        weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer).collect()
+        # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer).collect()
+        weekPostsRDD = postsRDD.map(weekPostsMapper).reduceByKey(postsReducer).collect()
         print("--------Week Posts RDD length: %s" % str(len(weekPostsRDD)))
         # Filter to the 25% week number
         # weekCutoff = int(0.25 * int(totalWeeks.value))
