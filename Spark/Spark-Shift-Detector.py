@@ -44,6 +44,8 @@ if __name__ == "__main__":
         # # This gets the length of the line
         line = line.replace("u\'", "")
         line = line.replace("\'", "")
+        line = line.replace("[", "").replace("]", "")
+
         # ## assumes that line is a tab delimited string
         lineTokens = line.split("\\t")
 
@@ -142,7 +144,7 @@ if __name__ == "__main__":
 
         # sample the first element of the rdd
         print("\n----Posts RDD")
-        for i in range(0, 10, 1):
+        for i in range(0, len(postsRDD), 1):
             post1 = postsRDD[i]
             print(post1)
 
