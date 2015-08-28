@@ -16,7 +16,7 @@ if __name__ == "__main__":
         # ## assumes that line is a tab delimited string
         lineTokens = line.split("\\t")
 
-        return (len(lineTokens), 1)
+        return (line, 1)
         # return (len(lineTokens), 1)
 
     def testReduce(count1, count2):
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         lineOrig = line
         # convert the line to an asci representation from unicode so that it can be worked with
         line = line.encode('ascii', 'ignore')
-        
+
         # # This gets the length of the line
         line = line.replace("\'", "")
         # ## assumes that line is a tab delimited string
@@ -128,15 +128,15 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
-        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
+        postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        # postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
 
-        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
+        print("----Cleaned posts RDD length : %s" % str(postsRDD))
 
         # sample the first element of the rdd
-        for i in range(0, 10, 1):
-            post1 = postsRDD[i]
-            print(post1)
+        # for i in range(0, 10, 1):
+        #     post1 = postsRDD[i]
+        #     print(post1)
 
         # get the minimum and maximum dates from the RDD's posts
         # print("----Getting dates RDD and computing min and max dates for window")
