@@ -57,11 +57,12 @@ if __name__ == "__main__":
             userid = lineTokens[2]
             content = lineTokens[3]
             # 2011-06-13 09:27:30
-            # date = datetime.strptime(lineTokens[4], '%Y-%m-%d %H:%M:%S')
-            date = lineTokens[4]
+
+            dateString = lineTokens[4]
+            date = datetime.strptime(dateString, '%Y-%m-%d %H:%M:%S')
 
             post = Post(userid, postid, forumid, date)
-            post.addContent("Orginal line: " + lineOrig + " WITH mod line: " + line)
+            post.addContent(content)
             posts.append(post)
         return posts
 
@@ -132,15 +133,15 @@ if __name__ == "__main__":
         cleanedFile = sc.textFile(cleanFileLocation)
 
         # postsRDD = cleanedFile.flatMap(lineLoader).collect()
-        testPostsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        # testPostsRDD = cleanedFile.flatMap(lambda x: x.split(",")).map(testMap).reduceByKey(testReduce).collect()
+        # print("\n----Test RDD")
+        # for i in range(0, 10, 1):
+        #     post1 = testPostsRDD[i][0]
+        #     print(post1)
+
+
         postsRDD = cleanedFile.flatMap(lambda x: x.split(",")).flatMap(lineLoader).collect()
-
-        # print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
-
-        print("\n----Test RDD")
-        for i in range(0, 10, 1):
-            post1 = testPostsRDD[i][0]
-            print(post1)
+        print("----Cleaned posts RDD length : %s" % str(len(postsRDD)))
 
         # sample the first element of the rdd
         print("\n----Posts RDD")
