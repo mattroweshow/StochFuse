@@ -36,9 +36,10 @@ if __name__ == "__main__":
             return "hdfs://scc-culture-mind.lancs.ac.uk/user/kershad1/data/twitter/twitter-cleaned-posts"
 
     def lineLoader(line):
+        lineOrig = line
         # convert the line to an asci representation from unicode so that it can be worked with
         line = line.encode('ascii', 'ignore')
-        lineOrig = line
+        
         # # This gets the length of the line
         line = line.replace("\'", "")
         # ## assumes that line is a tab delimited string
