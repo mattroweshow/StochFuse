@@ -3,6 +3,8 @@ __author__ = 'rowem'
 from pyspark import SparkContext, SparkConf
 from datetime import datetime, timedelta
 from Post import Post
+import numpy as np
+import scipy.stats as sp
 
 if __name__ == "__main__":
 
@@ -100,6 +102,99 @@ if __name__ == "__main__":
         posts = posts1 + posts2
         return posts
 
+    #input: tuple of (week_key, [post])
+    def computeWeeklyTerms(tuple):
+        week_key = int(tuple[0])
+        posts = tuple[1]
+        term_frequency = {}
+        for post in posts:
+            terms = post.content.lowercase.split()
+            for term in terms:
+                if term in term_frequency:
+                    term_frequency[term] = 1
+                else:
+                    term_frequency[term] += 1
+        return (week_key, term_frequency)
+
+    # Sequential functions
+    def runSequentialanalysis(weekly_term_distributions):
+        print("Deriving total term distribution")
+        terms = set()
+        # Derive the term set
+        for week_key in sorted(weekly_term_distributions):
+            terms.add(set(weekly_term_distributions[week_key].keys()))
+        print("Dimensionality: " + str(len(terms)))
+
+        # prime the beta using a uniform prior
+        alpha = 1
+        beta = 1
+        prior_0_betas = {}
+        for term in terms:
+            prior_0_betas[term] = {'alpha': alpha, 'beta': beta}
+        weekly_betas = {0: prior_0_betas}
+
+        print("Running weekly sequential updating using Beta-Bin conjugate")
+        for week_key in sorted(weekly_term_distributions):
+            weekly_term_distribution = weekly_term_distributions[week_key]
+
+            # get the likelihood params: X ~ B(n, p) => (x,n) - where x is number of t occurrences, n is total occurrences
+            n = sum(weekly_term_distribution.values())
+            posterior_betas = {}
+            for term in terms:
+                x = 0
+                if term in weekly_term_distribution:
+                    x = weekly_term_distribution[term]
+
+                # derive the beta for the week by updating the prior to get the posterior
+                prior_beta = weekly_betas[week_key-1][term]
+                posterior_beta = {'alpha': (prior_beta['alpha'] + x),
+                                  'beta': (prior_beta['beta'] + n - x)}
+                posterior_betas[term] = posterior_beta
+
+            # Log tha weekly betas following conjugate analysis
+            weekly_betas[week_key] = posterior_betas
+
+        print("Deriving weekly means of terms")
+        weekly_term_means = {}
+        weekly_term_means_delta = {}
+        for week_key in weekly_betas:
+            # Get the weekly term means
+            week_term_means = {}
+            weekly_term_means_delta = {}
+            for term in weekly_betas[week_key]:
+                term_alpha = weekly_betas[week_key][term]['alpha']
+                term_beta = weekly_betas[week_key][term]['beta']
+                mean = float(term_alpha) / (float(term_alpha) + float(term_beta))
+                week_term_means[term] = mean
+
+                # get the delta between the current mean and the previous week's mean
+                if week_key > 1:
+                    previous_mean = weekly_term_means[week_key-1][term]
+                    delta = mean - previous_mean
+                    weekly_term_means_delta[term] = delta
+
+            # Derive the delta distribution between the beta distributions means
+            weekly_term_means[week_key] = week_term_means
+            weekly_term_means_delta[week_key] = weekly_term_means_delta
+
+        print("Weekly Term Means")
+        for week_key in weekly_term_means:
+            print("Week: " + str(week_key))
+            print(str(len(weekly_term_means[week_key])))
+            print(str(np.array(weekly_term_means[week_key])))
+            print(str(np.mean(np.array(weekly_term_means[week_key]))))
+            print(str(np.std(np.array(weekly_term_means[week_key]))))
+            print(str(sp.shapiro(np.array(weekly_term_means[week_key]))))
+
+        print("Weekly Term Deltas")
+        for week_key in weekly_term_means_delta:
+            print("Week: " + str(week_key))
+            print(str(len(weekly_term_means_delta[week_key])))
+            print(str(np.array(weekly_term_means_delta[week_key])))
+            print(str(np.mean(np.array(weekly_term_means_delta[week_key]))))
+            print(str(np.std(np.array(weekly_term_means_delta[week_key]))))
+            print(str(sp.shapiro(np.array(weekly_term_means[week_key]))))
+
 
     ##### Main Execution Code
     conf = SparkConf().setAppName("StochFuse - Shift Detector")
@@ -170,18 +265,34 @@ if __name__ == "__main__":
         print("----Computing posts to week number")
         # weekPostsRDD = postsRDD.map(weekPostsMapper).foldByKey((0, None), postsReducer).collect()
         weekPostsRDD = postsRDD.map(weekPostsMapper).reduceByKey(postsReducer)
+        weekPostsRDD.cache()
         # Filter to the 25% week number
         weekCutoff = int(0.25 * int(totalWeeks.value))
-        cutOffRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        print("--------Cutoff Posts RDD length: %s" % str(len(cutOffRDD)))
+        burninRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        print("--------Cutoff Posts RDD length: %s" % str(len(burninRDD)))
+        # Filter post 25% week number
+        postRDD = weekPostsRDD.filter(lambda x: x[0] > weekCutoff).map(lambda x: (x[0], x[1])).collect()
+        print("--------Cutoff Posts RDD length: %s" % str(len(postRDD)))
 
         #### check point - ensure that the code works up to this point
-        # Derive burn-in distribution for each term signal - over the first 25% of data
+        # Step 1: EDA
+        # Derive burn-in distribution for each term signal - over the first 25% of data - induce term specific beta priors
+        # Compute weekly term (category) distributions
+        print("------Comoputing the weekly term distribution over the burn in period")
+        weeklyBurnInTermDistributions = burninRDD\
+            .map(computeWeeklyTerms)\
+            .sortByKey()\
+            .collectAsMap()
 
-        # Run per-week analysis of each token's signal: update the dirichlet each week
+        print("-----Running conjugate analysis on a single node")
+        runSequentialanalysis(weeklyBurnInTermDistributions)
+
+
+
+
 
         # Derive delta distributions per week, plot shape
 
-        # Run shapiro wilk test on each token's distribution and plot the shape of the
+
 
 
