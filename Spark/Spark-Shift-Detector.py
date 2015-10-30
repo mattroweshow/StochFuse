@@ -108,7 +108,7 @@ if __name__ == "__main__":
         posts = tuple[1]
         term_frequency = {}
         for post in posts:
-            terms = post.content.lowercase.split()
+            terms = post.content.lower().split()
             for term in terms:
                 if term in term_frequency:
                     term_frequency[term] = 1
@@ -268,11 +268,11 @@ if __name__ == "__main__":
         weekPostsRDD.cache()
         # Filter to the 25% week number
         weekCutoff = int(0.25 * int(totalWeeks.value))
-        burninRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        print("--------Cutoff Posts RDD length: %s" % str(len(burninRDD)))
+        burninRDD = weekPostsRDD.filter(lambda x: x[0] <= weekCutoff).map(lambda x: (x[0], x[1]))
+        # print("--------Cutoff Posts RDD length: %s" % str(len(burninRDD)))
         # Filter post 25% week number
-        postRDD = weekPostsRDD.filter(lambda x: x[0] > weekCutoff).map(lambda x: (x[0], x[1])).collect()
-        print("--------Cutoff Posts RDD length: %s" % str(len(postRDD)))
+        postRDD = weekPostsRDD.filter(lambda x: x[0] > weekCutoff).map(lambda x: (x[0], x[1]))
+        # print("--------Cutoff Posts RDD length: %s" % str(len(postRDD)))
 
         #### check point - ensure that the code works up to this point
         # Step 1: EDA
@@ -282,7 +282,8 @@ if __name__ == "__main__":
         weeklyBurnInTermDistributions = burninRDD\
             .map(computeWeeklyTerms)\
             .sortByKey()\
-            .collectAsMap()
+            .collect()
+
 
         print("-----Running conjugate analysis on a single node")
         runSequentialanalysis(weeklyBurnInTermDistributions)
