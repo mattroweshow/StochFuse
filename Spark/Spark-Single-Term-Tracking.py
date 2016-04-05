@@ -136,6 +136,7 @@ if __name__ == "__main__":
             post_date = posts[0].date
             for term in terms:
                 if term not in stopwords:
+                    term  = term.replace(".", "")
                     terms_dates.append((term, {post_date: 1}))
         return terms_dates
 
@@ -201,7 +202,7 @@ if __name__ == "__main__":
     conf.set("spark.mesos.coarse", "true")
     conf.set("spark.driver.maxResultSize", "10g")
     # Added the core limit to avoid resource allocation overruns
-    conf.set("spark.cores.max", "15")
+    conf.set("spark.cores.max", "30")
 #    conf.setMaster("mesos://zk://scc-culture-mind.lancs.ac.uk:2181/mesos")
     conf.setMaster("mesos://zk://scc-culture-slave4.lancs.ac.uk:2181/mesos")
     conf.set("spark.executor.uri", "hdfs://scc-culture-mind.lancs.ac.uk/lib/spark-1.3.0-bin-hadoop2.4.tgz")
@@ -236,9 +237,10 @@ if __name__ == "__main__":
 
         print("-----Computing partition-level MR job..")
 
-        # Go through and derive the per term date counts
+        # Go through and derive the per term date counts - only use terms with > 5 occurrences
         daily_term_counts_rdd = rawPostsFile.flatMap(singleTermlineTokenizer)\
-            .reduceByKey(single_term_reducer)
+            .reduceByKey(single_term_reducer)\
+            .filter(lambda x: sum([count for count in x[1].values()]) > 5)
         daily_term_counts = daily_term_counts_rdd.collectAsMap()
 
         # test that this worked
@@ -274,22 +276,37 @@ if __name__ == "__main__":
             break
 
         # Derive the weekly counts of term occurences
-        # weekly_counts_rdd = weekly_term_counts_rdd.flatMap(lambda x: [(week_key, x[1][week_key]) for week_key in x[1]])\
-        #     .reduceByKey(lambda count1, count2: count1 + count2)
-        # weekly_counts = weekly_counts_rdd.collectAsMap()
-        # print(str(weekly_counts))
-        # print(str(len(weekly_counts)))
-        # weekly_counts_b = sc.broadcast(weekly_counts)
+        weekly_counts_rdd = weekly_term_counts_rdd.flatMap(lambda x: [(week_key, x[1][week_key]) for week_key in x[1]])\
+            .reduceByKey(lambda count1, count2: count1 + count2)
+        weekly_counts = weekly_counts_rdd.collectAsMap()
+        print("Global weekly term counts")
+        print(str(weekly_counts))
+        print(str(len(weekly_counts)))
+        weekly_counts_b = sc.broadcast(weekly_counts)
 
-        # # Derive the relative frequencies of terms
-        # weekly_term_relfreqs_rdd = weekly_counts_rdd.map(single_term_weekly_relfreqs_mapper)
-        # weekly_term_relfreqs = weekly_term_relfreqs_rdd.collectAsMap()
-        # for term in weekly_term_relfreqs:
-        #     print(term)
-        #     print(weekly_term_relfreqs[term])
-        #     break
-        # print(str(len(weekly_term_relfreqs)))
+        # Derive the relative frequencies of terms
+        weekly_term_relfreqs_rdd = weekly_term_counts_rdd.map(single_term_weekly_relfreqs_mapper)
+        weekly_term_relfreqs = weekly_term_relfreqs_rdd.collectAsMap()
+        print("Term Relative Frequencies")
+        print(str(len(weekly_term_relfreqs)))
+        for term in weekly_term_relfreqs:
+            term_counts = weekly_term_relfreqs[term]
+            print(term)
+            for week in term_counts:
+                print(str(week) + " -> " + str(term_counts[week]))
+            break
 
+        # Print results to a local file for analysis
+        output_string = ""
+        for term in weekly_term_relfreqs:
+            term_counts = weekly_term_relfreqs[term]
+            output_string += term
+            for week_key in sorted(term_counts):
+                output_string += "\t" + str(term_counts[week_key])
+            output_string += "\n"
+        f = open("../data/" + str(dataset) + "_single_term_probs.tsv", "w")
+        f.write(output_string)
+        f.close()
 
         sc.stop()
 
