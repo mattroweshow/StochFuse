@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     ### Tokenizer functions to handle term distributions
     # single term line tokenizer - for single term density functions
-    def singleTermlineTokenizer(line):
+    def dualTermlineTokenizer(line):
         dataset_name = datasetName.value
         posts = []
         # get the stopwords from the broadcast variable
@@ -135,12 +135,16 @@ if __name__ == "__main__":
             # get the date when the post was made
             post_date = posts[0].date
             for term in terms:
-                if term not in stopwords:
-                    term  = term.replace(".", "")
-                    terms_dates.append((term, {post_date: 1}))
+                for term2 in terms:
+                    if term not in stopwords and term2 not in stopwords and term is not term2:
+                        term = term.replace(".", "")
+                        term2 = term2.replace(".", "")
+                        # mint the key from term and term2
+                        terms_key = term + "_" + term2
+                        terms_dates.append((terms_key, {post_date: 1}))
         return terms_dates
 
-    def single_term_reducer(dates_dict_1, dates_dict_2):
+    def terms_reducer(dates_dict_1, dates_dict_2):
         dates = dates_dict_1
         for date in dates_dict_2:
             if date in dates:
@@ -149,11 +153,11 @@ if __name__ == "__main__":
                 dates[date] = dates_dict_2[date]
         return dates
 
-    def single_term_weekly_counts_mapper(x):
+    def terms_weekly_counts_mapper(x):
         startDate = min_date_b.value
         total_weeks = total_weeks_b.value
         day1 = (startDate - timedelta(days=startDate.weekday()))
-        term = x[0]
+        term_key = x[0]
         dates_counts = x[1]
         weekly_count = {}
         for date in dates_counts:
@@ -169,11 +173,11 @@ if __name__ == "__main__":
         for i in range(0, total_weeks+1):
             if i not in weekly_count:
                 weekly_count[i] = 0
-        return (term, weekly_count)
+        return (term_key, weekly_count)
 
-    def single_term_weekly_relfreqs_mapper(x):
+    def terms_weekly_relfreqs_mapper(x):
         weekly_counts = weekly_counts_b.value
-        term = x[0]
+        term_key = x[0]
         weekly_term_counts = x[1]
         weekly_term_relfreqs = {}
         for week_key in weekly_term_counts:
@@ -183,7 +187,7 @@ if __name__ == "__main__":
                 count /= denom
             # weekly_term_relfreqs[week_key] = str(count) + " - " + str(denom)
             weekly_term_relfreqs[week_key] = count
-        return (term, weekly_term_relfreqs)
+        return (term_key, weekly_term_relfreqs)
 
 
     # Compiles a dictionary of terms using a basic term count distribution and MR design pattern
@@ -195,7 +199,7 @@ if __name__ == "__main__":
         return count
 
     ##### Main Execution Code
-    conf = SparkConf().setAppName("StochFuse - Single-Term Joint Density Calculation")
+    conf = SparkConf().setAppName("StochFuse - Dual-Term Joint Density Calculation")
     conf.set("spark.python.worker.memory","10g")
     conf.set("spark.driver.memory","15g")
     conf.set("spark.executor.memory","10g")
@@ -239,8 +243,8 @@ if __name__ == "__main__":
         print("-----Computing partition-level MR job..")
 
         # Go through and derive the per term date counts - only use terms with > 5 occurrences
-        daily_term_counts_rdd = rawPostsFile.flatMap(singleTermlineTokenizer)\
-            .reduceByKey(single_term_reducer)\
+        daily_term_counts_rdd = rawPostsFile.flatMap(dualTermlineTokenizer)\
+            .reduceByKey(terms_reducer)\
             .filter(lambda x: sum([count for count in x[1].values()]) > 5)
         daily_term_counts = daily_term_counts_rdd.collectAsMap()
 
@@ -268,7 +272,7 @@ if __name__ == "__main__":
         print("--------Total weeks: %s" % str(total_weeks_b.value))
 
         # Go back through the per-term date counts, and derive weekly counts
-        weekly_term_counts_rdd = daily_term_counts_rdd.map(single_term_weekly_counts_mapper)
+        weekly_term_counts_rdd = daily_term_counts_rdd.map(terms_weekly_counts_mapper)
         weekly_term_counts = weekly_term_counts_rdd.collectAsMap()
         print ("Term weekly counts length = " + str(len(weekly_term_counts)))
         for term in weekly_term_counts:
@@ -286,7 +290,7 @@ if __name__ == "__main__":
         weekly_counts_b = sc.broadcast(weekly_counts)
 
         # Derive the relative frequencies of terms
-        weekly_term_relfreqs_rdd = weekly_term_counts_rdd.map(single_term_weekly_relfreqs_mapper)
+        weekly_term_relfreqs_rdd = weekly_term_counts_rdd.map(terms_weekly_relfreqs_mapper)
         weekly_term_relfreqs = weekly_term_relfreqs_rdd.collectAsMap()
         print("Term Relative Frequencies")
         print(str(len(weekly_term_relfreqs)))
@@ -305,10 +309,11 @@ if __name__ == "__main__":
             for week_key in sorted(term_counts):
                 output_string += "\t" + str(term_counts[week_key])
             output_string += "\n"
-        f = open("../data/" + str(dataset) + "_single_term_probs.tsv", "w")
+        f = open("../data/" + str(dataset) + "_dual_term_probs.tsv", "w")
         f.write(output_string)
         f.close()
 
         sc.stop()
+
 
 
