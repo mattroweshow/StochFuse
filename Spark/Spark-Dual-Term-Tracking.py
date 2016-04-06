@@ -4,6 +4,7 @@ from LineParser import LineParser
 from Post import Post
 import re
 import string
+import sys
 from datetime import datetime, timedelta
 
 if __name__ == "__main__":
@@ -137,10 +138,11 @@ if __name__ == "__main__":
             for term in terms:
                 for term2 in terms:
                     if term not in stopwords and term2 not in stopwords and term is not term2:
-                        term = term.replace(".", "")
+                        term1 = term.replace(".", "")
+                        term1_hash = hash(term1) % ((sys.maxsize + 1) * 2)
                         term2 = term2.replace(".", "")
-                        # mint the key from term and term2
-                        terms_key = term + "_" + term2
+                        term2_hash = hash(term2) % ((sys.maxsize + 1) * 2)
+                        terms_key = abs(term1_hash - term2_hash)
                         terms_dates.append((terms_key, {post_date: 1}))
         return terms_dates
 
